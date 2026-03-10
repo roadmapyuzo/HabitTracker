@@ -9,6 +9,6 @@ public interface AlarmRepository {
     Alarm findById(int id);
     List<Alarm> findByHabitId(int habitId);
     void delete(int id);
-    void update(Alarm alarm);
+
 
 }

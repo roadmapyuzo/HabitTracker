@@ -9,6 +9,6 @@ public interface DailyRecordRepository {
     Record findById(int id);
     List<Record> findByHabitId(int habitId);
     void delete(int id);
-    void update(Record record);
+
 
 }

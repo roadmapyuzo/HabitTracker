@@ -11,9 +11,5 @@ public interface HabitRepository {
     List<Habit> findAll();
     void delete(int id);
 
-    void update(Habit habit);
-
-
-
 
 }
