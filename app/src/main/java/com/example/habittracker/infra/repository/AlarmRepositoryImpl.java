@@ -16,9 +16,9 @@ import java.util.List;
 
 public class AlarmRepositoryImpl extends BaseSQLRepository<Alarm> implements AlarmRepository {
 
-    public AlarmRepositoryImpl(Context context) {
+    public AlarmRepositoryImpl(DatabaseHelper dbHelper, AlarmCursorMapper mapper) {
         super(
-                new DatabaseHelper(context),
+                dbHelper,
                 DatabaseContract.AlarmTable.TABLE_NAME,
                 new String[]{
                         DatabaseContract.AlarmTable.COL_ID,
@@ -26,7 +26,7 @@ public class AlarmRepositoryImpl extends BaseSQLRepository<Alarm> implements Ala
                         DatabaseContract.AlarmTable.COL_HOUR,
                         DatabaseContract.AlarmTable.COL_MINUTE
                 },
-                new AlarmCursorMapper()
+                mapper
         );
     }
 

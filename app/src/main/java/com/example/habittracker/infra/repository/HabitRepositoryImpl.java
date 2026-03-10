@@ -13,17 +13,17 @@ import java.util.List;
 
 public class HabitRepositoryImpl extends BaseSQLRepository<Habit> implements HabitRepository {
 
-    public HabitRepositoryImpl(Context context) {
+    public HabitRepositoryImpl(DatabaseHelper dbHelper, HabitCursorMapper mapper) {
         super(
-                new DatabaseHelper(context),
-                DatabaseContract.HabitTable.TABLE_NAME,
+                dbHelper,
+                com.example.habittracker.infra.db.DatabaseContract.HabitTable.TABLE_NAME,
                 new String[]{
-                        DatabaseContract.HabitTable.COL_ID,
-                        DatabaseContract.HabitTable.COL_NAME,
-                        DatabaseContract.HabitTable.COL_DAILY_GOAL,
-                        DatabaseContract.HabitTable.COL_ACTIVE_ALARMS
+                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_ID,
+                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_NAME,
+                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_DAILY_GOAL,
+                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_ACTIVE_ALARMS
                 },
-                new HabitCursorMapper()
+                mapper
         );
     }
 

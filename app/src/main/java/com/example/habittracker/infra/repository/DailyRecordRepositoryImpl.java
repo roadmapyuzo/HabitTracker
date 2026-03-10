@@ -16,17 +16,17 @@ import java.util.List;
 
 public class DailyRecordRepositoryImpl extends BaseSQLRepository<Record> implements DailyRecordRepository {
 
-    public DailyRecordRepositoryImpl(Context context) {
+    public DailyRecordRepositoryImpl(DatabaseHelper dbHelper, RecordCursorMapper mapper) {
         super(
-                new DatabaseHelper(context),
-                DatabaseContract.RecordTable.TABLE_NAME,
+                dbHelper,
+                com.example.habittracker.infra.db.DatabaseContract.RecordTable.TABLE_NAME,
                 new String[]{
-                        DatabaseContract.RecordTable.COL_ID,
-                        DatabaseContract.RecordTable.COL_HABIT_ID,
-                        DatabaseContract.RecordTable.COL_NUMBER_OF_TIMES,
-                        DatabaseContract.RecordTable.COL_DATE
+                        com.example.habittracker.infra.db.DatabaseContract.RecordTable.COL_ID,
+                        com.example.habittracker.infra.db.DatabaseContract.RecordTable.COL_HABIT_ID,
+                        com.example.habittracker.infra.db.DatabaseContract.RecordTable.COL_NUMBER_OF_TIMES,
+                        com.example.habittracker.infra.db.DatabaseContract.RecordTable.COL_DATE
                 },
-                new RecordCursorMapper()
+                mapper
         );
     }
 
