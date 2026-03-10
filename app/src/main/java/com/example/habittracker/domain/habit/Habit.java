@@ -6,6 +6,7 @@ public class Habit {
     String name;
     int dailyGoal;
     boolean activeAlarms;
+    int streak;
 
     public Habit (Integer id,String name, int goal, boolean alarms) {
 
@@ -13,14 +14,15 @@ public class Habit {
             throw new IllegalArgumentException("Name cannot be null");
         }
 
-        if (goal <= 0) {
-            throw new IllegalArgumentException("Goal needs to be higher than 0");
+        if (goal < 0) {
+            throw new IllegalArgumentException("Goal cannot be negative");
         }
 
         this.id = id;
         this.name = name;
         this.dailyGoal = goal;
         this.activeAlarms = alarms;
+        this.streak = 0;
 
     }
 
@@ -87,6 +89,18 @@ public class Habit {
         } else {
             this.id = id;
         }
+
+    }
+
+    public void resetStreak() {
+
+        this.streak = 0;
+
+    }
+
+    public void incrementStreak() {
+
+        this.streak += 1;
 
     }
 
