@@ -11,7 +11,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // Cria a instância do container **uma vez** para toda a aplicação
+
         container = new AppContainer(this);
     }
 

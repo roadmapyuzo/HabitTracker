@@ -42,6 +42,10 @@ public class Habit {
         return activeAlarms;
     }
 
+    public int getStreak() {
+        return streak;
+    }
+
     public void changeName(String name) {
 
         if (!name.isBlank()) {
