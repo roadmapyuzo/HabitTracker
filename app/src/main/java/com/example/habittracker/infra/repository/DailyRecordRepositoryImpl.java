@@ -11,6 +11,7 @@ import com.example.habittracker.infra.db.DatabaseContract;
 import com.example.habittracker.infra.db.DatabaseHelper;
 import com.example.habittracker.infra.repository.cursor.RecordCursorMapper;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,11 @@ public class DailyRecordRepositoryImpl extends BaseSQLRepository<Record> impleme
 
     @Override
     public void save(Record record) {
+
+        System.out.println("CHEGOU AQUI NO SAVE "+record.getId());
+
+        System.out.println("ESSE AQI: "+record.getNumberOfTimes());
+
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.RecordTable.COL_HABIT_ID, record.getHabitId());
         values.put(DatabaseContract.RecordTable.COL_NUMBER_OF_TIMES, record.getNumberOfTimes());
@@ -83,5 +89,40 @@ public class DailyRecordRepositoryImpl extends BaseSQLRepository<Record> impleme
     @Override
     public void delete(int id) {
         super.delete(DatabaseContract.RecordTable.COL_ID + " = ?", new String[]{String.valueOf(id)});
+    }
+    @Override
+    public Record findByHabitAndDate(int habitId, LocalDate date) {
+
+        String whereClause =
+                DatabaseContract.RecordTable.COL_HABIT_ID + " = ? AND " +
+                        DatabaseContract.RecordTable.COL_DATE + " = ?";
+
+        String[] args = new String[]{
+                String.valueOf(habitId),
+                date.toString()
+        };
+
+        SQLiteDatabase db = readable();
+
+        Cursor cursor = db.query(
+                tableName,
+                columns,
+                whereClause,
+                args,
+                null,
+                null,
+                null
+        );
+
+        Record record = null;
+
+        if (cursor.moveToFirst()) {
+            record = mapper.map(cursor);
+        }
+
+        cursor.close();
+        db.close();
+
+        return record;
     }
 }

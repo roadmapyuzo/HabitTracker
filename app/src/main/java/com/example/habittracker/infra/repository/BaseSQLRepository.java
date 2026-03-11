@@ -42,7 +42,7 @@ public abstract class BaseSQLRepository<T> {
     protected int update(ContentValues values, String whereClause, String[] whereArgs) {
         SQLiteDatabase db = writable();
         int rows = db.update(tableName, values, whereClause, whereArgs);
-        db.close();
+        System.out.println("Rows updated: " + rows);
         return rows;
     }
 

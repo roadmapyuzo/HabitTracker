@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.habittracker.app.alarms.AlarmRepository;
 import com.example.habittracker.app.dailyRecord.DailyRecordRepository;
+import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
 import com.example.habittracker.app.habit.HabitRepository;
 import com.example.habittracker.app.DateProvider;
 
@@ -28,6 +29,16 @@ import com.example.habittracker.infra.repository.HabitRepositoryImpl;
 import com.example.habittracker.infra.repository.cursor.AlarmCursorMapper;
 import com.example.habittracker.infra.repository.cursor.RecordCursorMapper;
 import com.example.habittracker.infra.repository.cursor.HabitCursorMapper;
+
+import com.example.habittracker.app.dailyRecord.useCases.CreateRecordUseCase;
+import com.example.habittracker.app.dailyRecord.useCases.GetRecordsByHabitUseCase;
+
+import com.example.habittracker.app.dailyRecord.useCases.RegisterHabitExecutionUseCase;
+import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCase;
+
+import com.example.habittracker.app.alarms.useCases.CreateAlarmUseCase;
+import com.example.habittracker.app.alarms.useCases.DeleteAlarmUseCase;
+import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
 
 public class AppContainer {
 
@@ -55,6 +66,23 @@ public class AppContainer {
     private DeactivateHabitAlarmUseCase deactivateHabitAlarmsUseCase;
     private IncrementHabitStreakUseCase incrementHabitStreakUseCase;
     private ResetHabitStreakUseCase resetHabitStreakUseCase;
+
+    /// daily record use cases
+
+    private CreateRecordUseCase createRecordUseCase;
+
+    private GetRecordsByHabitUseCase getRecordsByHabitUseCase;
+
+    private RegisterHabitExecutionUseCase registerHabitExecutionUseCase;
+    private GetHabitWeekStatusUseCase getHabitWeekStatusUseCase;
+
+    private GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase;
+
+    /// alarm use cases
+
+    private CreateAlarmUseCase createAlarmUseCase;
+    private DeleteAlarmUseCase deleteAlarmUseCase;
+    private GetAlarmsByHabitUseCase getAlarmsByHabitUseCase;
 
     public AppContainer(Context context) {
         this.context = context;
@@ -196,5 +224,81 @@ public class AppContainer {
         }
         return resetHabitStreakUseCase;
     }
+
+    /// daily record use cases
+
+    public CreateRecordUseCase getCreateRecordUseCase() {
+        if (createRecordUseCase == null) {
+            createRecordUseCase = new CreateRecordUseCase(getDailyRecordRepository());
+        }
+        return createRecordUseCase;
+    }
+
+    public GetRecordsByHabitUseCase getGetRecordsByHabitUseCase() {
+        if (getRecordsByHabitUseCase == null) {
+            getRecordsByHabitUseCase =
+                    new GetRecordsByHabitUseCase(getDailyRecordRepository());
+        }
+        return getRecordsByHabitUseCase;
+    }
+
+    public RegisterHabitExecutionUseCase getRegisterHabitExecutionUseCase() {
+        if (registerHabitExecutionUseCase == null) {
+            registerHabitExecutionUseCase =
+                    new RegisterHabitExecutionUseCase(
+                            getDailyRecordRepository(),
+                            getDateProvider()
+                    );
+        }
+        return registerHabitExecutionUseCase;
+    }
+
+    public GetHabitWeekStatusUseCase getGetHabitWeekStatusUseCase() {
+        if (getHabitWeekStatusUseCase == null) {
+            getHabitWeekStatusUseCase =
+                    new GetHabitWeekStatusUseCase(
+                            getDailyRecordRepository(),
+                            getHabitRepository(),
+                            getDateProvider()
+                    );
+        }
+        return getHabitWeekStatusUseCase;
+    }
+
+    public GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase() {
+        if (getRecordByHabitAndDateUseCase == null) {
+            getRecordByHabitAndDateUseCase =
+                    new GetRecordByHabitAndDateUseCase(
+                            getDailyRecordRepository()
+                    );
+        }
+        return getRecordByHabitAndDateUseCase;
+    }
+
+    /// alarm use cases
+
+    public CreateAlarmUseCase getCreateAlarmUseCase() {
+        if (createAlarmUseCase == null) {
+            createAlarmUseCase = new CreateAlarmUseCase(getAlarmRepository());
+        }
+        return createAlarmUseCase;
+    }
+
+    public DeleteAlarmUseCase getDeleteAlarmUseCase() {
+        if (deleteAlarmUseCase == null) {
+            deleteAlarmUseCase = new DeleteAlarmUseCase(getAlarmRepository());
+        }
+        return deleteAlarmUseCase;
+    }
+
+    public GetAlarmsByHabitUseCase getGetAlarmsByHabitUseCase() {
+        if (getAlarmsByHabitUseCase == null) {
+            getAlarmsByHabitUseCase =
+                    new GetAlarmsByHabitUseCase(getAlarmRepository());
+        }
+        return getAlarmsByHabitUseCase;
+    }
+
+
 
 }
