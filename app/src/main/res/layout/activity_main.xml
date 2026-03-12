@@ -33,6 +33,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/habitList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="466dp" />
+
+    <Button
+        android:id="@+id/buttontest"
+        android:text="test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

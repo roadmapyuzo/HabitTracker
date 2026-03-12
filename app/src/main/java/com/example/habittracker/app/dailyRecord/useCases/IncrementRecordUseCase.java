@@ -11,8 +11,14 @@ public class IncrementRecordUseCase {
         this.repository = repository;
     }
 
-    public void execute(Record record) {
-        record.increment();
+    public void execute(int id) {
+
+        Record record = repository.findById(id);
+        record.setNumberOfTimes(2);
         repository.save(record);
+
+        Record record2 = repository.findById(id);
+        System.out.println("AAAAA: "+record2.getNumberOfTimes());
+        System.out.println("AAAAA do record 1: "+record.getNumberOfTimes());
     }
 }

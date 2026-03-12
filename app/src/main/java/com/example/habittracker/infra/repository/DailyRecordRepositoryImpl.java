@@ -34,10 +34,6 @@ public class DailyRecordRepositoryImpl extends BaseSQLRepository<Record> impleme
     @Override
     public void save(Record record) {
 
-        System.out.println("CHEGOU AQUI NO SAVE "+record.getId());
-
-        System.out.println("ESSE AQI: "+record.getNumberOfTimes());
-
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.RecordTable.COL_HABIT_ID, record.getHabitId());
         values.put(DatabaseContract.RecordTable.COL_NUMBER_OF_TIMES, record.getNumberOfTimes());
@@ -82,7 +78,7 @@ public class DailyRecordRepositoryImpl extends BaseSQLRepository<Record> impleme
         }
 
         cursor.close();
-        db.close();
+
         return records;
     }
 
@@ -121,8 +117,6 @@ public class DailyRecordRepositoryImpl extends BaseSQLRepository<Record> impleme
         }
 
         cursor.close();
-        db.close();
-
         return record;
     }
 }

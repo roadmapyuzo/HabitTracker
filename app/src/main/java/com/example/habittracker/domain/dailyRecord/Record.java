@@ -17,7 +17,7 @@ public class Record {
 
         this.id = id;
         this.habitId = habitId;
-        this.numberOfTimes = 1;
+        this.numberOfTimes = times;
         this.date = date;
 
     }
@@ -36,6 +36,10 @@ public class Record {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setNumberOfTimes(int numberOfTimes) {
+        this.numberOfTimes = numberOfTimes;
     }
 
     public void increment() {

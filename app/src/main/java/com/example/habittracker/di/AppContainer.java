@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.habittracker.app.alarms.AlarmRepository;
 import com.example.habittracker.app.dailyRecord.DailyRecordRepository;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
+import com.example.habittracker.app.dailyRecord.useCases.IncrementRecordUseCase;
 import com.example.habittracker.app.habit.HabitRepository;
 import com.example.habittracker.app.DateProvider;
 
@@ -77,6 +78,8 @@ public class AppContainer {
     private GetHabitWeekStatusUseCase getHabitWeekStatusUseCase;
 
     private GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase;
+
+    private IncrementRecordUseCase getIncrementRecordUseCase;
 
     /// alarm use cases
 
@@ -273,6 +276,16 @@ public class AppContainer {
                     );
         }
         return getRecordByHabitAndDateUseCase;
+    }
+
+    public IncrementRecordUseCase getIncrementRecordUseCase() {
+        if (getIncrementRecordUseCase == null) {
+            getIncrementRecordUseCase =
+                    new IncrementRecordUseCase(
+                            getDailyRecordRepository()
+                    );
+        }
+        return getIncrementRecordUseCase;
     }
 
     /// alarm use cases

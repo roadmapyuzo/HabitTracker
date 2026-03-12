@@ -7,11 +7,13 @@ import android.widget.*;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habittracker.R;
+import com.example.habittracker.app.DateProvider;
 import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.RegisterHabitExecutionUseCase;
 import com.example.habittracker.domain.dailyRecord.Record;
 import com.example.habittracker.domain.habit.Habit;
+import com.example.habittracker.infra.DateProviderImpl;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -24,6 +26,8 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
     private final RegisterHabitExecutionUseCase registerExecution;
     private final GetHabitWeekStatusUseCase weekStatusUseCase;
+
+    private final DateProvider date = new DateProviderImpl();
 
     private final GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase;
 
@@ -95,7 +99,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         holder.name.setText(habit.getName());
         holder.goal.setText("Goal: " + habit.getDailyGoal());
 
-        Record todayRecord = getRecordByHabitAndDateUseCase.execute(habit.getId(),LocalDate.now());
+        Record todayRecord = getRecordByHabitAndDateUseCase.execute(habit.getId(),date.today());
 
         int todayCount;
         if (todayRecord == null) {

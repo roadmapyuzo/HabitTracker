@@ -35,21 +35,18 @@ public abstract class BaseSQLRepository<T> {
     protected long insert(ContentValues values) {
         SQLiteDatabase db = writable();
         long id = db.insert(tableName, null, values);
-        db.close();
         return id;
     }
 
     protected int update(ContentValues values, String whereClause, String[] whereArgs) {
         SQLiteDatabase db = writable();
         int rows = db.update(tableName, values, whereClause, whereArgs);
-        System.out.println("Rows updated: " + rows);
         return rows;
     }
 
     protected int delete(String whereClause, String[] whereArgs) {
         SQLiteDatabase db = writable();
         int rows = db.delete(tableName, whereClause, whereArgs);
-        db.close();
         return rows;
     }
 
@@ -62,7 +59,6 @@ public abstract class BaseSQLRepository<T> {
             entity = mapper.map(cursor);
         }
         cursor.close();
-        db.close();
         return entity;
     }
 
@@ -74,7 +70,6 @@ public abstract class BaseSQLRepository<T> {
             list.add(mapper.map(cursor));
         }
         cursor.close();
-        db.close();
         return list;
     }
 }

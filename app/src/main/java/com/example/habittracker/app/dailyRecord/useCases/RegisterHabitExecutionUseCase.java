@@ -2,7 +2,9 @@ package com.example.habittracker.app.dailyRecord.useCases;
 
 import com.example.habittracker.app.DateProvider;
 import com.example.habittracker.app.dailyRecord.DailyRecordRepository;
+import com.example.habittracker.app.habit.HabitRepository;
 import com.example.habittracker.domain.dailyRecord.Record;
+import com.example.habittracker.domain.habit.Habit;
 
 import java.time.LocalDate;
 
@@ -17,6 +19,7 @@ public class RegisterHabitExecutionUseCase {
     ) {
         this.repository = repository;
         this.dateProvider = dateProvider;
+
     }
 
     public void execute(int habitId) {
@@ -39,20 +42,8 @@ public class RegisterHabitExecutionUseCase {
 
         } else {
 
-            System.out.println("chegou aqui");
-            System.out.println(record.getId());
-            System.out.println(record.getNumberOfTimes());
-
             record.increment();
-
-            System.out.println(record.getNumberOfTimes());
-
             repository.save(record);
-
-            Record record2 =
-                    repository.findById(2);
-
-            System.out.println(record2.getNumberOfTimes());
 
         }
     }

@@ -13,6 +13,8 @@ import com.example.habittracker.MyApplication;
 import com.example.habittracker.R;
 
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
+import com.example.habittracker.app.dailyRecord.useCases.IncrementRecordUseCase;
+import com.example.habittracker.app.habit.useCases.ChangeHabitNameUseCase;
 import com.example.habittracker.app.habit.useCases.CreateHabitUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
 
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private CreateHabitUseCase createHabitUseCase;
     private GetHabitsUseCase getHabitsUseCase;
+
+    private IncrementRecordUseCase incrementRecordUseCase;
 
     private RegisterHabitExecutionUseCase registerHabitExecutionUseCase;
     private GetHabitWeekStatusUseCase getHabitWeekStatusUseCase;
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         createHabitUseCase = app.container.getCreateHabitUseCase();
         getHabitsUseCase = app.container.getGetHabitsUseCase();
         getRecordByHabitAndDateUseCase = app.container.getRecordByHabitAndDateUseCase();
+        incrementRecordUseCase = app.container.getIncrementRecordUseCase();
+
 
         registerHabitExecutionUseCase = app.container.getRegisterHabitExecutionUseCase();
         getHabitWeekStatusUseCase = app.container.getGetHabitWeekStatusUseCase();
@@ -55,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         Switch switchAlarm = findViewById(R.id.switchAlarm);
         Button buttonCreate = findViewById(R.id.buttonCreate);
         RecyclerView recyclerView = findViewById(R.id.habitList);
+
+        Button buttonTest = findViewById(R.id.buttontest);
 
         adapter = new HabitAdapter(
                 new ArrayList<>(),
@@ -78,6 +86,14 @@ public class MainActivity extends AppCompatActivity {
 
             loadHabits();
         });
+
+        buttonTest.setOnClickListener(v -> {
+
+            incrementRecordUseCase.execute(2);
+
+            loadHabits();
+        });
+
     }
 
     private void loadHabits() {
