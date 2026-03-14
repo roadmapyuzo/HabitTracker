@@ -2,104 +2,43 @@ package com.example.habittracker.presentation.main;
 
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.example.habittracker.MyApplication;
 import com.example.habittracker.R;
-
-import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
-import com.example.habittracker.app.dailyRecord.useCases.IncrementRecordUseCase;
-import com.example.habittracker.app.habit.useCases.ChangeHabitNameUseCase;
-import com.example.habittracker.app.habit.useCases.CreateHabitUseCase;
-import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
-
-import com.example.habittracker.app.dailyRecord.useCases.RegisterHabitExecutionUseCase;
-import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCase;
-
-import com.example.habittracker.domain.habit.Habit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private CreateHabitUseCase createHabitUseCase;
-    private GetHabitsUseCase getHabitsUseCase;
+    private MainViewModel viewModel;
 
-    private IncrementRecordUseCase incrementRecordUseCase;
-
-    private RegisterHabitExecutionUseCase registerHabitExecutionUseCase;
-    private GetHabitWeekStatusUseCase getHabitWeekStatusUseCase;
-
-    private GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase;
-
-    private HabitAdapter adapter;
+    private TextView textMessage;
+    private Button buttonAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MyApplication app = (MyApplication) getApplication();
+        textMessage = findViewById(R.id.textMessage);
+        buttonAction = findViewById(R.id.buttonAction);
 
-        createHabitUseCase = app.container.getCreateHabitUseCase();
-        getHabitsUseCase = app.container.getGetHabitsUseCase();
-        getRecordByHabitAndDateUseCase = app.container.getRecordByHabitAndDateUseCase();
-        incrementRecordUseCase = app.container.getIncrementRecordUseCase();
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-
-        registerHabitExecutionUseCase = app.container.getRegisterHabitExecutionUseCase();
-        getHabitWeekStatusUseCase = app.container.getGetHabitWeekStatusUseCase();
-
-        EditText inputName = findViewById(R.id.inputName);
-        EditText inputGoal = findViewById(R.id.inputGoal);
-        Switch switchAlarm = findViewById(R.id.switchAlarm);
-        Button buttonCreate = findViewById(R.id.buttonCreate);
-        RecyclerView recyclerView = findViewById(R.id.habitList);
-
-        Button buttonTest = findViewById(R.id.buttontest);
-
-        adapter = new HabitAdapter(
-                new ArrayList<>(),
-                registerHabitExecutionUseCase,
-                getRecordByHabitAndDateUseCase,
-                getHabitWeekStatusUseCase
-        );
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-
-        loadHabits();
-
-        buttonCreate.setOnClickListener(v -> {
-
-            String name = inputName.getText().toString();
-            int goal = Integer.parseInt(inputGoal.getText().toString());
-            boolean alarms = switchAlarm.isChecked();
-
-            createHabitUseCase.execute(name, goal, alarms);
-
-            loadHabits();
-        });
-
-        buttonTest.setOnClickListener(v -> {
-
-            incrementRecordUseCase.execute(2);
-
-            loadHabits();
-        });
-
+        observeViewModel();
+        setupListeners();
     }
 
-    private void loadHabits() {
+    private void observeViewModel() {
+        viewModel.getMessage().observe(this, message -> {
+            textMessage.setText(message);
+        });
+    }
 
-        List<Habit> habits = getHabitsUseCase.execute();
-        adapter.update(habits);
-
+    private void setupListeners() {
+        buttonAction.setOnClickListener(v -> {
+            viewModel.onButtonClicked();
+        });
     }
 }

@@ -250,7 +250,8 @@ public class AppContainer {
             registerHabitExecutionUseCase =
                     new RegisterHabitExecutionUseCase(
                             getDailyRecordRepository(),
-                            getDateProvider()
+                            getDateProvider(),
+                            getCreateRecordUseCase()
                     );
         }
         return registerHabitExecutionUseCase;
