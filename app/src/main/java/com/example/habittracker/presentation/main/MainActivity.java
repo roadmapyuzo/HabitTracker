@@ -2,43 +2,71 @@ package com.example.habittracker.presentation.main;
 
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habittracker.R;
+import com.example.habittracker.di.AppContainer;
+import com.example.habittracker.domain.habit.Habit;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private MainViewModel viewModel;
-
-    private TextView textMessage;
-    private Button buttonAction;
+    private MainAdapter adapter;
+    private AppContainer container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textMessage = findViewById(R.id.textMessage);
-        buttonAction = findViewById(R.id.buttonAction);
 
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        container = new AppContainer(getApplicationContext());
 
-        observeViewModel();
-        setupListeners();
-    }
 
-    private void observeViewModel() {
-        viewModel.getMessage().observe(this, message -> {
-            textMessage.setText(message);
+        viewModel = container.getMainViewModel();
+        adapter = container.getMainAdapter();
+
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewHabits);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+
+        viewModel.displayData.observe(this, new Observer<List<MainDisplayDataHolder>>() {
+            @Override
+            public void onChanged(List<MainDisplayDataHolder> displayDataHolders) {
+                adapter.updateData(displayDataHolders);
+            }
+        });
+
+
+        viewModel.loadData();
+
+
+        Button btnGenerateMock = findViewById(R.id.btnGenerateMock);
+        btnGenerateMock.setOnClickListener(v -> {
+            createMockHabit();
         });
     }
 
-    private void setupListeners() {
-        buttonAction.setOnClickListener(v -> {
-            viewModel.onButtonClicked();
-        });
+
+    private void createMockHabit() {
+
+        String name = "Hábito Mock";
+        int dailyGoal = 2;
+        boolean alarms = false;
+
+
+        container.getCreateHabitUseCase().execute(name, dailyGoal, alarms);
+
+
+        viewModel.loadData();
     }
 }
+

@@ -40,6 +40,12 @@ import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCa
 import com.example.habittracker.app.alarms.useCases.CreateAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.DeleteAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
+import com.example.habittracker.presentation.main.MainAdapter;
+import com.example.habittracker.presentation.main.MainDisplayDataHolder;
+import com.example.habittracker.presentation.main.MainViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppContainer {
 
@@ -86,6 +92,11 @@ public class AppContainer {
     private CreateAlarmUseCase createAlarmUseCase;
     private DeleteAlarmUseCase deleteAlarmUseCase;
     private GetAlarmsByHabitUseCase getAlarmsByHabitUseCase;
+
+    ///  main UI
+
+    private MainViewModel mainViewModel;
+    private MainAdapter mainAdapter;
 
     public AppContainer(Context context) {
         this.context = context;
@@ -311,6 +322,33 @@ public class AppContainer {
                     new GetAlarmsByHabitUseCase(getAlarmRepository());
         }
         return getAlarmsByHabitUseCase;
+    }
+
+    ///  main UI
+
+    public MainViewModel getMainViewModel() {
+        if (mainViewModel == null) {
+            mainViewModel = new MainViewModel(
+                    getGetHabitsUseCase(),
+                    getRecordByHabitAndDateUseCase(),
+                    getGetHabitWeekStatusUseCase(),
+                    getDateProvider(),
+                    getRegisterHabitExecutionUseCase()
+
+            );
+        }
+        return mainViewModel;
+    }
+
+    public MainAdapter getMainAdapter() {
+
+        List<MainDisplayDataHolder> initialList = new ArrayList<>();
+
+        if (mainAdapter == null) {
+            mainAdapter = new MainAdapter(initialList, getMainViewModel());
+        }
+
+        return mainAdapter;
     }
 
 
