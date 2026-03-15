@@ -85,6 +85,10 @@ public class MainViewModel extends ViewModel {
         for (MainDisplayDataHolder item : currentList) {
             if (item.getHabit().getId().equals(habit.getId())) {
 
+                List<Boolean> weekStatus = getHabitWeekStatusUseCase.execute(habit.getId());
+
+                item.setWeekStatus(weekStatus);
+
                 Record record = getRecordByHabitAndDateUseCase.execute(habit.getId(), dateProvider.today());
 
                 item.setGoalStatus(record != null ? record.getNumberOfTimes() : 0);

@@ -8,93 +8,311 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/area1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:background="#C8E6C9"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/area2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="4">
-
-            <TextView
-                android:id="@+id/txtHabitName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:scrollHorizontally="false"
-                android:text="Test"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/area2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:background="#C8E6C9"
-            android:orientation="vertical"
-            app:layout_constraintStart_toEndOf="@id/area1"
-            app:layout_constraintEnd_toStartOf="@id/area3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="5">
-
-            <TextView
-                android:id="@+id/textProgressTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Daily progress"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#222222"
-                android:layout_marginBottom="5dp"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
 
             <LinearLayout
-                android:id="@+id/progressDotsContainer"
-                android:layout_width="match_parent"
+                android:id="@+id/area1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="#2196F3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/area2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="4">
+
+                <TextView
+                    android:id="@+id/txtHabitName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:scrollHorizontally="false"
+                    android:text="Test"
+                    android:textStyle="bold"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/area2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="#2196F3"
+                android:orientation="vertical"
+                app:layout_constraintStart_toEndOf="@id/area1"
+                app:layout_constraintEnd_toStartOf="@id/area3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="5">
+
+                <TextView
+                    android:id="@+id/textProgressTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Daily progress"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#222222"
+                    android:layout_marginBottom="5dp"/>
+
+                <LinearLayout
+                    android:id="@+id/progressDotsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/area3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/check_button"
+                app:layout_constraintStart_toEndOf="@id/area2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="1">
+
+                <ImageView
+                    android:id="@+id/area3_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_add"
+                    app:tint="#FFFFFF"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/expandArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#2196F3"
+            android:visibility="visible">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/weeklyProgress"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"/>
+                android:layout_marginBottom="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/alarmLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintWidth_percent="0.9">
+
+                <TextView
+                    android:id="@+id/day1Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Mon"
+                    android:textSize="12sp"
+                    android:textColor="#222222"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/day2Label"
+                    app:layout_constraintWidth_percent="0.128"/>
+
+                <View
+                    android:id="@+id/day1Square"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/day_square_background"
+                    app:layout_constraintTop_toBottomOf="@id/day1Label"
+                    app:layout_constraintStart_toStartOf="@id/day1Label"
+                    app:layout_constraintEnd_toEndOf="@id/day1Label"/>
 
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/day2Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Tue"
+                    android:textSize="12sp"
+                    android:textColor="#222222"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/day1Label"
+                    app:layout_constraintEnd_toStartOf="@+id/day3Label"
+                    app:layout_constraintWidth_percent="0.128"/>
 
-        <LinearLayout
-            android:id="@+id/area3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@drawable/check_button"
-            app:layout_constraintStart_toEndOf="@id/area2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="1">
+                <View
+                    android:id="@+id/day2Square"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/day_square_background"
+                    app:layout_constraintTop_toBottomOf="@id/day2Label"
+                    app:layout_constraintStart_toStartOf="@id/day2Label"
+                    app:layout_constraintEnd_toEndOf="@id/day2Label"/>
 
-            <ImageView
-                android:id="@+id/area3_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_add"
-                app:tint="#FFFFFF"/>
-        </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/day3Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Wed"
+                    android:textSize="12sp"
+                    android:textColor="#222222"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/day2Label"
+                    app:layout_constraintEnd_toStartOf="@+id/day4Label"
+                    app:layout_constraintWidth_percent="0.128"/>
 
+                <View
+                    android:id="@+id/day3Square"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/day_square_background"
+                    app:layout_constraintTop_toBottomOf="@id/day3Label"
+                    app:layout_constraintStart_toStartOf="@id/day3Label"
+                    app:layout_constraintEnd_toEndOf="@id/day3Label"/>
+
+
+                <TextView
+                    android:id="@+id/day4Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Thu"
+                    android:textSize="12sp"
+                    android:textColor="#222222"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/day3Label"
+                    app:layout_constraintEnd_toStartOf="@+id/day5Label"
+                    app:layout_constraintWidth_percent="0.128"/>
+
+                <View
+                    android:id="@+id/day4Square"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/day_square_background"
+                    app:layout_constraintTop_toBottomOf="@id/day4Label"
+                    app:layout_constraintStart_toStartOf="@id/day4Label"
+                    app:layout_constraintEnd_toEndOf="@id/day4Label"/>
+
+
+                <TextView
+                    android:id="@+id/day5Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Fri"
+                    android:textSize="12sp"
+                    android:textColor="#222222"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/day4Label"
+                    app:layout_constraintEnd_toStartOf="@+id/day6Label"
+                    app:layout_constraintWidth_percent="0.128"/>
+
+                <View
+                    android:id="@+id/day5Square"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/day_square_background"
+                    app:layout_constraintTop_toBottomOf="@id/day5Label"
+                    app:layout_constraintStart_toStartOf="@id/day5Label"
+                    app:layout_constraintEnd_toEndOf="@id/day5Label"/>
+
+
+                <TextView
+                    android:id="@+id/day6Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Sat"
+                    android:textSize="12sp"
+                    android:textColor="#222222"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/day5Label"
+                    app:layout_constraintEnd_toStartOf="@+id/day7Label"
+                    app:layout_constraintWidth_percent="0.128"/>
+
+                <View
+                    android:id="@+id/day6Square"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/day_square_background"
+                    app:layout_constraintTop_toBottomOf="@id/day6Label"
+                    app:layout_constraintStart_toStartOf="@id/day6Label"
+                    app:layout_constraintEnd_toEndOf="@id/day6Label"/>
+
+
+                <TextView
+                    android:id="@+id/day7Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Sun"
+                    android:textSize="12sp"
+                    android:textColor="#222222"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/day6Label"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintWidth_percent="0.128"/>
+
+                <View
+                    android:id="@+id/day7Square"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/day_square_background"
+                    app:layout_constraintTop_toBottomOf="@id/day7Label"
+                    app:layout_constraintStart_toStartOf="@id/day7Label"
+                    app:layout_constraintEnd_toEndOf="@id/day7Label"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/alarmLayout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/check_button"
+                app:layout_constraintStart_toEndOf="@id/weeklyProgress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintWidth_percent="0.1">
+
+                <ImageView
+                    android:id="@+id/alarm_icon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_add_alert"
+                    app:tint="#FFFFFF"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
