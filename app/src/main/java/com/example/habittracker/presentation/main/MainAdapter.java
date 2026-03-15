@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habittracker.R;
@@ -110,6 +111,27 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             holder.dayLabels[i].setText(dayAbbrev);
         }
 
+        holder.area1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.expandArea.getVisibility() == View.GONE) {
+                    holder.expandArea.setVisibility(View.VISIBLE);
+                } else {
+                    holder.expandArea.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        holder.area2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.expandArea.getVisibility() == View.GONE) {
+                    holder.expandArea.setVisibility(View.VISIBLE);
+                } else {
+                    holder.expandArea.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     @Override
@@ -124,12 +146,17 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         LinearLayout buttonCheck;
         TextView[] dayLabels = new TextView[7];
         View[] daySquares = new View[7];
+        LinearLayout area1;
+        LinearLayout area2;
+        ConstraintLayout expandArea;
         public MainViewHolder(View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtHabitName);
             progressDotsContainer = itemView.findViewById(R.id.progressDotsContainer);
             buttonCheck = itemView.findViewById(R.id.area3);
-
+            area1 = itemView.findViewById(R.id.area1);
+            area2 = itemView.findViewById(R.id.area2);
+            expandArea = itemView.findViewById(R.id.expandArea);
 
             dayLabels[0] = itemView.findViewById(R.id.day1Label);
             dayLabels[1] = itemView.findViewById(R.id.day2Label);
