@@ -3,6 +3,9 @@ package com.example.habittracker.di;
 import android.content.Context;
 
 import com.example.habittracker.app.alarms.AlarmRepository;
+import com.example.habittracker.app.alarms.NotificationScheduler;
+import com.example.habittracker.app.alarms.useCases.GetAlarmByIdUseCase;
+import com.example.habittracker.app.alarms.useCases.ScheduleAlarmUseCase;
 import com.example.habittracker.app.dailyRecord.DailyRecordRepository;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.IncrementRecordUseCase;
@@ -23,6 +26,7 @@ import com.example.habittracker.app.habit.useCases.ResetHabitStreakUseCase;
 import com.example.habittracker.infra.DateProviderImpl;
 import com.example.habittracker.infra.db.DatabaseHelper;
 
+import com.example.habittracker.infra.notification.NotificationSchedulerImpl;
 import com.example.habittracker.infra.repository.AlarmRepositoryImpl;
 import com.example.habittracker.infra.repository.DailyRecordRepositoryImpl;
 import com.example.habittracker.infra.repository.HabitRepositoryImpl;
@@ -62,6 +66,8 @@ public class AppContainer {
     private DailyRecordRepository dailyRecordRepository;
     private HabitRepository habitRepository;
 
+    private NotificationScheduler notificationScheduler;
+
     /// habit use cases
     private CreateHabitUseCase createHabitUseCase;
     private DeleteHabitUseCase deleteHabitUseCase;
@@ -92,6 +98,10 @@ public class AppContainer {
     private CreateAlarmUseCase createAlarmUseCase;
     private DeleteAlarmUseCase deleteAlarmUseCase;
     private GetAlarmsByHabitUseCase getAlarmsByHabitUseCase;
+    private GetAlarmByIdUseCase getAlarmByIdUseCase;
+    private ScheduleAlarmUseCase scheduleAlarmUseCase;
+
+
 
     ///  main UI
 
@@ -324,6 +334,25 @@ public class AppContainer {
         return getAlarmsByHabitUseCase;
     }
 
+    public GetAlarmByIdUseCase getGetAlarmByIdUseCase() {
+        if (getAlarmByIdUseCase == null) {
+            getAlarmByIdUseCase =
+                    new GetAlarmByIdUseCase(getAlarmRepository());
+        }
+        return getAlarmByIdUseCase;
+    }
+
+    public ScheduleAlarmUseCase getScheduleAlarmUseCase() {
+        if (scheduleAlarmUseCase == null) {
+            scheduleAlarmUseCase =
+                    new ScheduleAlarmUseCase(getNotificationScheduler());
+        }
+
+        return scheduleAlarmUseCase;
+    }
+
+
+
     ///  main UI
 
     public MainViewModel getMainViewModel() {
@@ -349,6 +378,16 @@ public class AppContainer {
         }
 
         return mainAdapter;
+    }
+
+    public NotificationScheduler getNotificationScheduler() {
+        if (notificationScheduler == null) {
+
+            notificationScheduler = new NotificationSchedulerImpl(context);
+
+        }
+
+        return notificationScheduler;
     }
 
 

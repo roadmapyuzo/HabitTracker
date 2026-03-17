@@ -24,6 +24,7 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, NotificationReceiver.class);
+        intent.putExtra("alarmId", alarm.getId());
         intent.putExtra("habitId", alarm.getHabitId());
         intent.putExtra("hour", alarm.getHour());
         intent.putExtra("minute", alarm.getMinute());
@@ -49,6 +50,8 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
                 calendar.getTimeInMillis(),
                 pendingIntent
         );
+
+        System.out.println(calendar.getTime().toString());
     }
 
     @Override

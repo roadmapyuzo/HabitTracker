@@ -9,15 +9,31 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import android.content.pm.PackageManager;
 
+import com.example.habittracker.MyApplication;
 import com.example.habittracker.R;
+import com.example.habittracker.app.alarms.NotificationScheduler;
+import com.example.habittracker.app.alarms.useCases.GetAlarmByIdUseCase;
+import com.example.habittracker.di.AppContainer;
 import com.example.habittracker.domain.alarms.Alarm;
 
 public class NotificationReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        GetAlarmByIdUseCase getAlarmByIdUseCase;
+        NotificationScheduler notificationScheduler;
+
+        AppContainer container = ((MyApplication) context.getApplicationContext()).container;
+
+        getAlarmByIdUseCase = container.getGetAlarmByIdUseCase();
+        notificationScheduler = container.getNotificationScheduler();
+
+
         int habitId = intent.getIntExtra("habitId", 0);
         int hour = intent.getIntExtra("hour", 0);
         int minute = intent.getIntExtra("minute", 0);
+        int alarmId = intent.getIntExtra("alarmId",0);
 
         boolean canNotify = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -28,7 +44,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
         if (canNotify) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "habit_channel")
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationChannelConfig.HABIT_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_alarm)
                     .setContentTitle("Hora do hábito!")
                     .setContentText("Hora de realizar o hábito #" + habitId + " às " + hour + ":" + minute)
@@ -36,10 +52,10 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .setAutoCancel(true);
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-            notificationManager.notify(habitId, builder.build());
+            notificationManager.notify(alarmId, builder.build());
         }
 
-        Alarm alarm = new Alarm(habitId, habitId, hour, minute);
-        new NotificationSchedulerImpl(context).schedule(alarm);
+        Alarm alarm = getAlarmByIdUseCase.execute(alarmId);
+        notificationScheduler.schedule(alarm);
     }
 }
