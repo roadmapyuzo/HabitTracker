@@ -1,5 +1,8 @@
 package com.example.habittracker.presentation.main;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +19,17 @@ import com.example.habittracker.domain.habit.Habit;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
     private List<MainDisplayDataHolder> dataList;
     private MainViewModel viewModel;
 
+    private Set<Integer> expandedItems = new HashSet<>();
 
     public MainAdapter(List<MainDisplayDataHolder> dataList,MainViewModel viewModel) {
         this.dataList = dataList;
@@ -58,6 +64,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         int goalStatus = data.getGoalStatus();
 
         for (int i = 0; i < dailyGoal; i++) {
+
+            if (expandedItems.contains(position)) {
+                holder.expandArea.setVisibility(View.VISIBLE);
+            } else {
+                holder.expandArea.setVisibility(View.GONE);
+            }
 
             if (goalStatus > 0) {
 
@@ -111,25 +123,23 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             holder.dayLabels[i].setText(dayAbbrev);
         }
 
-        holder.area1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.expandArea.getVisibility() == View.GONE) {
-                    holder.expandArea.setVisibility(View.VISIBLE);
-                } else {
-                    holder.expandArea.setVisibility(View.GONE);
-                }
+        holder.area1.setOnClickListener(v -> {
+            if (holder.expandArea.getVisibility() == View.GONE) {
+                expandView(holder.expandArea);
+                expandedItems.add(position);
+            } else {
+                collapseView(holder.expandArea);
+                expandedItems.remove(position);
             }
         });
 
-        holder.area2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.expandArea.getVisibility() == View.GONE) {
-                    holder.expandArea.setVisibility(View.VISIBLE);
-                } else {
-                    holder.expandArea.setVisibility(View.GONE);
-                }
+        holder.area2.setOnClickListener(v -> {
+            if (holder.expandArea.getVisibility() == View.GONE) {
+                expandView(holder.expandArea);
+                expandedItems.add(position);
+            } else {
+                collapseView(holder.expandArea);
+                expandedItems.remove(position);
             }
         });
     }
@@ -175,6 +185,43 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             daySquares[6] = itemView.findViewById(R.id.day7Square);
         }
 
+    }
+
+    private void expandView(final View view) {
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(((View)view.getParent()).getWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.UNSPECIFIED
+        );
+        final int targetHeight = view.getMeasuredHeight();
+
+        view.getLayoutParams().height = 0;
+        view.setVisibility(View.VISIBLE);
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, targetHeight);
+        animator.addUpdateListener(animation -> {
+            view.getLayoutParams().height = (int) animation.getAnimatedValue();
+            view.requestLayout();
+        });
+        animator.setDuration(200);
+        animator.start();
+    }
+
+    private void collapseView(final View view) {
+        final int initialHeight = view.getHeight();
+
+        ValueAnimator animator = ValueAnimator.ofInt(initialHeight, 0);
+        animator.addUpdateListener(animation -> {
+            view.getLayoutParams().height = (int) animation.getAnimatedValue();
+            view.requestLayout();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view.setVisibility(View.GONE);
+            }
+        });
+        animator.setDuration(300);
+        animator.start();
     }
 
 

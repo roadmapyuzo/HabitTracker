@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel.loadData();
 
 
-        Button btnGenerateMock = findViewById(R.id.btnGenerateMock);
+        LinearLayout btnGenerateMock = findViewById(R.id.btnGenerateMock);
         btnGenerateMock.setOnClickListener(v -> {
             createTest();
         });

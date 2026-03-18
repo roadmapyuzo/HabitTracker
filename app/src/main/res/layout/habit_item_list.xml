@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="18dp"
     app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/item_background"
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,12 +25,11 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:background="#2196F3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/area2"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_weight="4">
+                app:layout_constraintHorizontal_weight="40">
 
                 <TextView
                     android:id="@+id/txtHabitName"
@@ -39,22 +39,30 @@
                     android:ellipsize="end"
                     android:scrollHorizontally="false"
                     android:text="Test"
+                    android:textColor="#DBD7D5"
                     android:textStyle="bold"
                     android:textSize="14sp"/>
             </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#464669"
+                app:layout_constraintStart_toEndOf="@id/area1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <LinearLayout
                 android:id="@+id/area2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:background="#2196F3"
                 android:orientation="vertical"
                 app:layout_constraintStart_toEndOf="@id/area1"
                 app:layout_constraintEnd_toStartOf="@id/area3"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_weight="5">
+                app:layout_constraintHorizontal_weight="45">
 
                 <TextView
                     android:id="@+id/textProgressTitle"
@@ -63,7 +71,7 @@
                     android:text="Daily progress"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="#222222"
+                    android:textColor="#DBD7D5"
                     android:layout_marginBottom="5dp"/>
 
                 <LinearLayout
@@ -83,29 +91,28 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:clickable="true"
-                android:focusable="true"
                 android:background="@drawable/check_button"
+                android:focusable="true"
                 app:layout_constraintStart_toEndOf="@id/area2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_weight="1">
+                app:layout_constraintHorizontal_weight="15">
 
-                <ImageView
-                    android:id="@+id/area3_icon"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_add"
-                    app:tint="#FFFFFF"/>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#464669"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/expandArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#2196F3"
+            android:background="@drawable/item_background"
             android:visibility="gone">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -117,7 +124,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/alarmLayout"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintWidth_percent="0.9">
+                app:layout_constraintWidth_percent="0.85">
 
                 <TextView
                     android:id="@+id/day1Label"
@@ -287,24 +294,12 @@
                 android:layout_height="0dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="@drawable/check_button"
+                android:background="@drawable/alarm_button"
                 app:layout_constraintStart_toEndOf="@id/weeklyProgress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintWidth_percent="0.1">
-
-                <ImageView
-                    android:id="@+id/alarm_icon"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_add_alert"
-                    app:tint="#FFFFFF"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
+                app:layout_constraintWidth_percent="0.15">
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
