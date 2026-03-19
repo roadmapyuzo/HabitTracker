@@ -31,6 +31,7 @@ import com.example.habittracker.infra.repository.AlarmRepositoryImpl;
 import com.example.habittracker.infra.repository.DailyRecordRepositoryImpl;
 import com.example.habittracker.infra.repository.HabitRepositoryImpl;
 
+import com.example.habittracker.infra.repository.StreakRepository;
 import com.example.habittracker.infra.repository.cursor.AlarmCursorMapper;
 import com.example.habittracker.infra.repository.cursor.RecordCursorMapper;
 import com.example.habittracker.infra.repository.cursor.HabitCursorMapper;
@@ -57,7 +58,7 @@ public class AppContainer {
 
     private DatabaseHelper databaseHelper;
     private DateProvider dateProvider;
-
+    private StreakRepository streakRepository;
     private AlarmCursorMapper alarmCursorMapper;
     private RecordCursorMapper recordCursorMapper;
     private HabitCursorMapper habitCursorMapper;
@@ -362,8 +363,8 @@ public class AppContainer {
                     getRecordByHabitAndDateUseCase(),
                     getGetHabitWeekStatusUseCase(),
                     getDateProvider(),
-                    getRegisterHabitExecutionUseCase()
-
+                    getRegisterHabitExecutionUseCase(),
+                    getStreakRepository()
             );
         }
         return mainViewModel;
@@ -390,6 +391,15 @@ public class AppContainer {
         return notificationScheduler;
     }
 
+    public StreakRepository getStreakRepository() {
+        if (streakRepository == null) {
+
+            streakRepository = new StreakRepository(context);
+
+        }
+
+        return streakRepository;
+    }
 
 
 }

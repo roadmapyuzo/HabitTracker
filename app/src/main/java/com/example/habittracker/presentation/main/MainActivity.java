@@ -1,11 +1,20 @@
 package com.example.habittracker.presentation.main;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -31,18 +40,20 @@ public class MainActivity extends AppCompatActivity {
     private MainAdapter adapter;
     private AppContainer container;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LinearLayout progressBar = findViewById(R.id.progressBar);
+        TextView streakValue = findViewById(R.id.streakValue);
+
         requestPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                     if (isGranted) {
-                        // Permissão concedida, você pode criar notificações
                         Toast.makeText(this, "Permissão concedida!", Toast.LENGTH_SHORT).show();
                     } else {
-                        // Permissão negada
                         Toast.makeText(this, "Permissão de notificação negada!", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -67,13 +78,76 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        viewModel.progressBarData.observe(this, progress -> {
+            int total = progress[0];
+            int completed = progress[1];
+
+            progressBar.removeAllViews();
+
+            for (int i = 0; i < total; i++) {
+                ImageView barItem = new ImageView(this);
+                barItem.setImageResource(R.drawable.loading_bar_item_empty);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                params.setMargins(4, 0, 4, 0);
+                barItem.setLayoutParams(params);
+
+                if (i < completed) {
+                    barItem.setImageResource(R.drawable.loading_bar_item);
+                }
+
+                progressBar.addView(barItem);
+            }
+        });
+
+
+        viewModel.streak.observe(this, value -> {
+            streakValue.setText(String.valueOf(value));
+        });
 
         viewModel.loadData();
 
 
         LinearLayout btnGenerateMock = findViewById(R.id.btnGenerateMock);
+
         btnGenerateMock.setOnClickListener(v -> {
-            createTest();
+
+            Dialog dialog = new Dialog(MainActivity.this);
+            dialog.setContentView(R.layout.habit_modal);
+
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+
+            dialog.show();
+
+            Window window = dialog.getWindow();
+            if (window != null) {
+                DisplayMetrics metrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int larguraTela = metrics.widthPixels;
+
+                int larguraDialog = (int) (larguraTela * 0.8);
+                window.setLayout(larguraDialog, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+
+            Button btnConfirm = dialog.findViewById(R.id.btnCreateHabit);
+            Button btnCancel = dialog.findViewById(R.id.btnCancel);
+
+            btnConfirm.setOnClickListener(v1 -> {
+
+                Toast.makeText(MainActivity.this, "Hábito criado!", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            });
+
+            btnCancel.setOnClickListener(v12 -> {
+                dialog.dismiss();
+            });
+
+            dialog.show();
         });
 
         checkNotificationPermission();

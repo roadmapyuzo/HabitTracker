@@ -63,6 +63,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         int dailyGoal = data.getHabit().getDailyGoal();
         int goalStatus = data.getGoalStatus();
 
+        if (goalStatus >= dailyGoal) {
+            holder.buttonCheck.setEnabled(false);
+            holder.buttonCheck.setAlpha(0.5f);
+        } else {
+            holder.buttonCheck.setClickable(true);
+            holder.buttonCheck.setAlpha(1f);
+        }
+
         for (int i = 0; i < dailyGoal; i++) {
 
             if (expandedItems.contains(position)) {
@@ -101,11 +109,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                 holder.progressDotsContainer.addView(dot);
             }
 
-            holder.buttonCheck.setOnClickListener(v -> {
-                viewModel.incrementHabit(data.getHabit());
-            });
-
         }
+
+        holder.buttonCheck.setOnClickListener(v -> {
+            viewModel.incrementHabit(data.getHabit());
+        });
 
         for (int i = 0; i < 7; i++) {
 
