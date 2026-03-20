@@ -2,6 +2,7 @@ package com.example.habittracker.presentation.main;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -29,6 +30,7 @@ import com.example.habittracker.R;
 import com.example.habittracker.di.AppContainer;
 import com.example.habittracker.domain.alarms.Alarm;
 import com.example.habittracker.domain.habit.Habit;
+import com.example.habittracker.presentation.cards.CardsActivity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -115,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnGenerateMock.setOnClickListener(v -> {
 
+            /*
             Dialog dialog = new Dialog(MainActivity.this);
             dialog.setContentView(R.layout.habit_modal);
 
@@ -148,6 +151,11 @@ public class MainActivity extends AppCompatActivity {
             });
 
             dialog.show();
+
+             */
+
+            Intent intent = new Intent(MainActivity.this, CardsActivity.class);
+            startActivity(intent);
         });
 
         checkNotificationPermission();
