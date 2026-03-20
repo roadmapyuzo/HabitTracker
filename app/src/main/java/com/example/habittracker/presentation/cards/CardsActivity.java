@@ -8,8 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.habittracker.R;
+import com.example.habittracker.adapters.CardsAdapter;
+import com.example.habittracker.domain.habit.Habit;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CardsActivity extends AppCompatActivity {
@@ -17,32 +19,33 @@ public class CardsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.habit_card_screen); // Layout da sua tela com ViewPager2
+        setContentView(R.layout.habit_card_screen);
 
-        // Pegando referência do ViewPager2
-        ViewPager2 viewPager = findViewById(R.id.viewPager);
-        if(viewPager == null){
+
+        ViewPager2 viewPager = findViewById(R.id.mainViewPager);
+        if (viewPager == null) {
             Log.e("CardsActivity", "ViewPager2 não encontrado!");
         }
 
 
+        List<Habit> habits = new ArrayList<>();
+        habits.add(new Habit(1, "Drink Water", 3, true));
+        habits.add(new Habit(2, "Exercise", 2, false));
+        habits.add(new Habit(3, "Read Book", 1, true));
 
-        // Lista de exemplo de cards
-        List<String> items = Arrays.asList("Card 1", "Card 2", "Card 3", "Card 4");
 
-        // Criando o Adapter
-        CardsAdapter adapter = new CardsAdapter(items);
+        CardsAdapter adapter = new CardsAdapter(habits);
 
-        // Setando o adapter no ViewPager2
+
         viewPager.setAdapter(adapter);
 
-        // Efeito de escala opcional (destaque para o card central)
+
         viewPager.setPageTransformer((page, position) -> {
             float scale = 0.85f + (1 - Math.abs(position)) * 0.15f;
             page.setScaleY(scale);
         });
 
-        // Espaço lateral opcional para ver parcialmente o próximo card
+
         viewPager.setClipToPadding(false);
         viewPager.setClipChildren(false);
         viewPager.setOffscreenPageLimit(3);
