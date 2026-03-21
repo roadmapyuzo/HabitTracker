@@ -1,9 +1,10 @@
-package com.example.habittracker.adapters;
+package com.example.habittracker.presentation.cards;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,21 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
     public void onBindViewHolder(@NonNull HabitViewHolder holder, int position) {
         Habit habit = habitList.get(position);
         holder.bind(habit);
+
+        holder.buttonPrev.setOnClickListener(v -> {
+            int current = holder.calendarViewPager.getCurrentItem();
+            if (current > 0) {
+                holder.calendarViewPager.setCurrentItem(current - 1, true);
+            }
+        });
+
+
+        holder.buttonNext.setOnClickListener(v -> {
+            int current = holder.calendarViewPager.getCurrentItem();
+            if (current < holder.calendarAdapter.getItemCount() - 1) {
+                holder.calendarViewPager.setCurrentItem(current + 1, true);
+            }
+        });
     }
 
     @Override
@@ -51,8 +67,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
         ViewPager2 calendarViewPager;
         CalendarAdapter calendarAdapter;
 
-        Button buttonPrev;
-        Button buttonNext;
+        LinearLayout buttonPrev;
+        LinearLayout buttonNext;
 
         public HabitViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,16 +76,16 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
             switchHabit = itemView.findViewById(R.id.switchHabit);
             calendarViewPager = itemView.findViewById(R.id.viewPager);
 
-            // Botões simples para navegar pelo calendário
+
             buttonPrev = itemView.findViewById(R.id.buttonPrevMonth);
             buttonNext = itemView.findViewById(R.id.buttonNextMonth);
 
-            // Inicializa o CalendarAdapter uma vez
+
             calendarAdapter = new CalendarAdapter(itemView.getContext(), 3);
             calendarViewPager.setAdapter(calendarAdapter);
             calendarViewPager.setOffscreenPageLimit(3);
 
-            // Botão "Anterior"
+
             buttonPrev.setOnClickListener(v -> {
                 int current = calendarViewPager.getCurrentItem();
                 if (current > 0) {
@@ -77,7 +93,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
                 }
             });
 
-            // Botão "Próximo"
+
             buttonNext.setOnClickListener(v -> {
                 int current = calendarViewPager.getCurrentItem();
                 if (current < calendarAdapter.getItemCount() - 1) {
@@ -89,7 +105,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
         void bind(Habit habit) {
             habitName.setText(habit.getName());
             switchHabit.setChecked(habit.isActiveAlarms());
-            // Calendário já está configurado, não precisa recriar
+
         }
     }
 }

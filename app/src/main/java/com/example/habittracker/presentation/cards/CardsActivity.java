@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.habittracker.R;
-import com.example.habittracker.adapters.CardsAdapter;
 import com.example.habittracker.domain.habit.Habit;
 
 import java.util.ArrayList;
