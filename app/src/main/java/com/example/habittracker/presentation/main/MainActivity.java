@@ -114,10 +114,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         LinearLayout btnGenerateMock = findViewById(R.id.btnGenerateMock);
+        LinearLayout btnCards = findViewById(R.id.buttonCards);
+
+        btnCards.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CardsActivity.class);
+            startActivity(intent);
+        });
 
         btnGenerateMock.setOnClickListener(v -> {
 
-            /*
             Dialog dialog = new Dialog(MainActivity.this);
             dialog.setContentView(R.layout.habit_modal);
 
@@ -152,10 +157,6 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.show();
 
-             */
-
-            Intent intent = new Intent(MainActivity.this, CardsActivity.class);
-            startActivity(intent);
         });
 
         checkNotificationPermission();

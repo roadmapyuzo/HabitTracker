@@ -12,17 +12,35 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habittracker.R;
+import com.example.habittracker.app.DateProvider;
+import com.example.habittracker.domain.dailyRecord.Record;
+import com.example.habittracker.presentation.cards.CardsDisplayDataHolder;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Calendar;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder> {
 
     private final Context context;
-    private final int numberOfMonths;
+    private final CardsDisplayDataHolder item;
+    private final DateProvider dateProvider;
 
-    public CalendarAdapter(Context context, int numberOfMonths) {
+    private final int numberOfMonths;
+    private final Map<LocalDate, Integer> recordMap = new HashMap<>();
+    private final int goal;
+
+    public CalendarAdapter(Context context, CardsDisplayDataHolder item, DateProvider dateProvider) {
         this.context = context;
-        this.numberOfMonths = numberOfMonths;
+        this.item = item;
+        this.dateProvider = dateProvider;
+        this.goal = item.getHabit().getDailyGoal();
+        for (Record record : item.getRecords()) {
+            recordMap.put(record.getDate(), record.getNumberOfTimes());
+        }
+
+        this.numberOfMonths = calculateMonthSpan();
     }
 
     @NonNull
@@ -36,13 +54,47 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, position); // incrementa o mês conforme a posição
-        holder.bind(calendar);
+        calendar.add(Calendar.MONTH, position - (getItemCount() - 1));
+        holder.bind(calendar, recordMap, goal);
     }
 
     @Override
     public int getItemCount() {
         return numberOfMonths;
+    }
+
+    public void updateData(CardsDisplayDataHolder updatedItem) {
+
+        this.recordMap.clear();
+        for (Record record : updatedItem.getRecords()) {
+            recordMap.put(record.getDate(), record.getNumberOfTimes());
+        }
+
+        notifyDataSetChanged();
+    }
+    private int calculateMonthSpan() {
+        LocalDate oldest = getOldestLocalDate();
+        if (oldest == null) return 1;
+
+        LocalDate now = dateProvider.today();
+
+        int months = (now.getYear() - oldest.getYear()) * 12 +
+                (now.getMonthValue() - oldest.getMonthValue());
+
+        return months + 1;
+    }
+
+    private LocalDate getOldestLocalDate() {
+        LocalDate oldest = null;
+
+        for (Record record : item.getRecords()) {
+            LocalDate date = record.getDate();
+            if (oldest == null || date.isBefore(oldest)) {
+                oldest = date;
+            }
+        }
+
+        return oldest;
     }
 
     static class CalendarViewHolder extends RecyclerView.ViewHolder {
@@ -56,13 +108,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
             daysGrid = itemView.findViewById(R.id.daysGrid);
         }
 
-        void bind(Calendar calendar) {
-            // Mostrar Mês + Ano
+        void bind(Calendar calendar, Map<LocalDate, Integer> recordMap, int goal) {
             int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH); // 0-11
+            int month = calendar.get(Calendar.MONTH);
+
             monthYearText.setText(getMonthName(month) + " " + year);
 
-            // Limpar grid antes de preencher
             daysGrid.removeAllViews();
             daysGrid.setColumnCount(7);
 
@@ -72,16 +123,29 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
                 TextView dayView = new TextView(itemView.getContext());
                 dayView.setText(String.valueOf(day));
                 dayView.setGravity(Gravity.CENTER);
-                dayView.setTextColor(0xFFFFFFFF); // branco
-                dayView.setBackgroundColor(0xFF000000); // preto = não completado
+                dayView.setTextColor(0xFFFFFFFF);
+
+                LocalDate date = LocalDate.of(year, month + 1, day);
+                Integer times = recordMap.get(date);
+
+                if (times == null) {
+
+                    dayView.setBackgroundResource(R.drawable.day_square_background);
+                } else if (times < goal) {
+
+                    dayView.setBackgroundResource(R.drawable.day_square_background);
+                } else {
+
+                    dayView.setBackgroundResource(R.drawable.day_green_calendar);
+                }
 
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = 0;
                 params.height = GridLayout.LayoutParams.WRAP_CONTENT;
                 params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
                 params.setMargins(4, 4, 4, 4);
-                dayView.setLayoutParams(params);
 
+                dayView.setLayoutParams(params);
                 daysGrid.addView(dayView);
             }
         }

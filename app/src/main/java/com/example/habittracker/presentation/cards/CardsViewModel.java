@@ -9,7 +9,9 @@ import com.example.habittracker.app.dailyRecord.useCases.GetRecordsByHabitUseCas
 import com.example.habittracker.app.dailyRecord.useCases.IncrementRecordUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.RegisterHabitExecutionUseCase;
 import com.example.habittracker.app.habit.useCases.ActivateHabitAlarmUseCase;
+import com.example.habittracker.app.habit.useCases.DeactivateHabitAlarmUseCase;
 import com.example.habittracker.app.habit.useCases.DeleteHabitUseCase;
+import com.example.habittracker.app.habit.useCases.GetHabitByIdUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
 import com.example.habittracker.app.habit.useCases.IncrementHabitStreakUseCase;
 import com.example.habittracker.domain.dailyRecord.Record;
@@ -31,11 +33,13 @@ public class CardsViewModel {
     private StreakRepository streakRepository;
     private GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase;
     private DateProvider dateProvider;
+    private GetHabitByIdUseCase getHabitByIdUseCase;
+    private DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase;
 
 
-    private MutableLiveData<List<CardsDisplayDataHolder>> _displayData = new MutableLiveData<>();
+    MutableLiveData<List<CardsDisplayDataHolder>> _displayData = new MutableLiveData<>();
 
-    private LiveData<List<CardsDisplayDataHolder>> displayData = _displayData;
+    LiveData<List<CardsDisplayDataHolder>> displayData = _displayData;
 
     public CardsViewModel(
             ActivateHabitAlarmUseCase activateHabitAlarmUseCase,
@@ -46,7 +50,9 @@ public class CardsViewModel {
             GetRecordsByHabitUseCase getRecordsByHabitUseCase,
             StreakRepository streakRepository,
             GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase,
-            DateProvider dateProvider
+            DateProvider dateProvider,
+            GetHabitByIdUseCase getHabitByIdUseCase,
+            DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase
     ) {
         this.activateHabitAlarmUseCase = activateHabitAlarmUseCase;
         this.getHabitsUseCase = getHabitsUseCase;
@@ -57,6 +63,8 @@ public class CardsViewModel {
         this.streakRepository = streakRepository;
         this.getRecordByHabitAndDateUseCase = getRecordByHabitAndDateUseCase;
         this.dateProvider = dateProvider;
+        this.getHabitByIdUseCase = getHabitByIdUseCase;
+        this.deactivateHabitAlarmUseCase = deactivateHabitAlarmUseCase;
     }
 
     public void loadData() {
@@ -98,22 +106,32 @@ public class CardsViewModel {
 
     public void incrementHabit(Habit habit) {
 
-
         registerHabitExecutionUseCase.execute(habit.getId());
-
-        updateDisplayDataForHabit(habit);
-
 
     }
 
-    private void updateDisplayDataForHabit(Habit habit) {
+    public void activateNotifications(Habit habit) {
 
-        if (_displayData.getValue() == null) return;
+        activateHabitAlarmUseCase.execute(habit.getId());
+
+    }
+
+    public void deactivateNotifications(Habit habit) {
+
+        deactivateHabitAlarmUseCase.execute(habit.getId());
+
+    }
+
+    public CardsDisplayDataHolder updateDisplayDataForHabit(Habit habit) {
+
+        if (_displayData.getValue() == null) return null;
 
         List<CardsDisplayDataHolder> currentList = new ArrayList<>(_displayData.getValue());
 
         for (CardsDisplayDataHolder item : currentList) {
             if (item.getHabit().getId().equals(habit.getId())) {
+
+                Habit newHabit = getHabitByIdUseCase.execute(habit.getId());
 
                 List<Record> records = getRecordsByHabitUseCase.execute(habit.getId());
 
@@ -131,13 +149,12 @@ public class CardsViewModel {
 
                 item.setGoalStatus(goalStatus);
 
-                break;
+                item.setHabit(newHabit);
+
+                return item;
             }
         }
-
-        _displayData.setValue(currentList);
-
-
+        return null;
     }
 
 

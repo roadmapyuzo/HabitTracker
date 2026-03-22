@@ -45,6 +45,9 @@ import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCa
 import com.example.habittracker.app.alarms.useCases.CreateAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.DeleteAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
+import com.example.habittracker.presentation.cards.CardsAdapter;
+import com.example.habittracker.presentation.cards.CardsDisplayDataHolder;
+import com.example.habittracker.presentation.cards.CardsViewModel;
 import com.example.habittracker.presentation.main.MainAdapter;
 import com.example.habittracker.presentation.main.MainDisplayDataHolder;
 import com.example.habittracker.presentation.main.MainViewModel;
@@ -108,6 +111,11 @@ public class AppContainer {
 
     private MainViewModel mainViewModel;
     private MainAdapter mainAdapter;
+
+    ///  Cards UI
+
+    private CardsViewModel cardsViewModel;
+    private CardsAdapter cardsAdapter;
 
     public AppContainer(Context context) {
         this.context = context;
@@ -399,6 +407,41 @@ public class AppContainer {
         }
 
         return streakRepository;
+    }
+
+    ///  Cards UI
+
+    public CardsViewModel getCardsViewModel() {
+        if (cardsViewModel == null) {
+
+            cardsViewModel = new CardsViewModel(
+                    getActivateHabitAlarmsUseCase(),
+                    getGetHabitsUseCase(),
+                    getDeleteHabitUseCase(),
+                    getIncrementHabitStreakUseCase(),
+                    getRegisterHabitExecutionUseCase(),
+                    getGetRecordsByHabitUseCase(),
+                    getStreakRepository(),
+                    getRecordByHabitAndDateUseCase(),
+                    getDateProvider(),
+                    getGetHabitByIdUseCase(),
+                    getDeactivateHabitAlarmsUseCase()
+                    );
+
+        }
+
+        return cardsViewModel;
+    }
+
+    public CardsAdapter getCardsAdapter() {
+
+        List<CardsDisplayDataHolder> initialList = new ArrayList<>();
+
+        if (cardsAdapter == null) {
+            cardsAdapter = new CardsAdapter(initialList, getDateProvider(), getCardsViewModel());
+        }
+
+        return cardsAdapter;
     }
 
 
