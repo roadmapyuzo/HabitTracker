@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -126,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
             Dialog dialog = new Dialog(MainActivity.this);
             dialog.setContentView(R.layout.habit_modal);
 
+            EditText edtHabitName = dialog.findViewById(R.id.edtHabitName);
+            EditText edtDailyGoal = dialog.findViewById(R.id.edtDailyGoal);
+
             if (dialog.getWindow() != null) {
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             }
@@ -140,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int larguraDialog = (int) (larguraTela * 0.8);
                 window.setLayout(larguraDialog, ViewGroup.LayoutParams.WRAP_CONTENT);
+
             }
 
             Button btnConfirm = dialog.findViewById(R.id.btnCreateHabit);
@@ -147,7 +153,24 @@ public class MainActivity extends AppCompatActivity {
 
             btnConfirm.setOnClickListener(v1 -> {
 
-                Toast.makeText(MainActivity.this, "Hábito criado!", Toast.LENGTH_SHORT).show();
+                String habitName = edtHabitName.getText().toString().trim();
+                String goalText = edtDailyGoal.getText().toString().trim();
+
+
+                if (habitName.isEmpty()) {
+                    Toast.makeText(this, "Digite o nome do hábito", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (goalText.isEmpty()) {
+                    Toast.makeText(this, "Digite a meta diária", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                int goal = Integer.parseInt(goalText);
+
+                viewModel.createHabit(habitName, goal);
+
                 dialog.dismiss();
             });
 

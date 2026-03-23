@@ -8,6 +8,7 @@ import com.example.habittracker.app.DateProvider;
 import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.RegisterHabitExecutionUseCase;
+import com.example.habittracker.app.habit.useCases.CreateHabitUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
 import com.example.habittracker.domain.dailyRecord.Record;
 import com.example.habittracker.domain.habit.Habit;
@@ -22,6 +23,7 @@ public class MainViewModel extends ViewModel {
    private GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase;
    private GetHabitWeekStatusUseCase getHabitWeekStatusUseCase;
    private DateProvider dateProvider;
+   private CreateHabitUseCase createHabitUseCase;
    private RegisterHabitExecutionUseCase registerHabitExecutionUseCase;
 
    private StreakRepository streakRepository;
@@ -34,13 +36,14 @@ public class MainViewModel extends ViewModel {
     public LiveData<Integer> streak = _streak;
 
 
-    public MainViewModel (GetHabitsUseCase getHabitsUseCase, GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase, GetHabitWeekStatusUseCase getHabitWeekStatusUseCase, DateProvider dateProvider, RegisterHabitExecutionUseCase registerHabitExecutionUseCase, StreakRepository streakRepository) {
+    public MainViewModel (GetHabitsUseCase getHabitsUseCase, GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase, GetHabitWeekStatusUseCase getHabitWeekStatusUseCase, DateProvider dateProvider, RegisterHabitExecutionUseCase registerHabitExecutionUseCase, StreakRepository streakRepository, CreateHabitUseCase createHabitUseCase) {
        this.getHabitsUseCase = getHabitsUseCase;
        this.getHabitWeekStatusUseCase = getHabitWeekStatusUseCase;
        this.getRecordByHabitAndDateUseCase = getRecordByHabitAndDateUseCase;
        this.dateProvider = dateProvider;
        this.registerHabitExecutionUseCase = registerHabitExecutionUseCase;
        this.streakRepository = streakRepository;
+       this.createHabitUseCase = createHabitUseCase;
    }
 
    public void loadData() {
@@ -162,6 +165,14 @@ public class MainViewModel extends ViewModel {
         }
 
         incrementarStreak();
+
+    }
+
+    public void createHabit(String name, int goal) {
+
+        createHabitUseCase.execute(name, goal, false);
+
+        loadData();
 
     }
 

@@ -152,6 +152,13 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
 
         });
 
+        holder.buttonDelete.setOnClickListener(v -> {
+
+            viewModel.deleteHabit(habit);
+
+
+        });
+
 
     }
 

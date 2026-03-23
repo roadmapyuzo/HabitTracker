@@ -372,7 +372,8 @@ public class AppContainer {
                     getGetHabitWeekStatusUseCase(),
                     getDateProvider(),
                     getRegisterHabitExecutionUseCase(),
-                    getStreakRepository()
+                    getStreakRepository(),
+                    getCreateHabitUseCase()
             );
         }
         return mainViewModel;

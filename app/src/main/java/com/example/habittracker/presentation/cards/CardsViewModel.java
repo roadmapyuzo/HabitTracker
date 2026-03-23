@@ -110,6 +110,14 @@ public class CardsViewModel {
 
     }
 
+    public void deleteHabit(Habit habit) {
+
+        deleteHabitUseCase.execute(habit.getId());
+
+        loadData();
+
+    }
+
     public void activateNotifications(Habit habit) {
 
         activateHabitAlarmUseCase.execute(habit.getId());
@@ -156,6 +164,8 @@ public class CardsViewModel {
         }
         return null;
     }
+
+
 
 
 
