@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".presentation.cards.CardsActivity" />
+        <activity android:name=".presentation.alarms.AlarmsActivity" />
     </application>
 
 </manifest>

@@ -32,6 +32,7 @@ import com.example.habittracker.R;
 import com.example.habittracker.di.AppContainer;
 import com.example.habittracker.domain.alarms.Alarm;
 import com.example.habittracker.domain.habit.Habit;
+import com.example.habittracker.presentation.alarms.AlarmsActivity;
 import com.example.habittracker.presentation.cards.CardsActivity;
 
 import java.util.Calendar;
@@ -83,28 +84,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewModel.progressBarData.observe(this, progress -> {
-            int total = progress[0];
-            int completed = progress[1];
+            progressBar.post(() -> {
+                int total = progress[0];
+                int completed = progress[1];
 
-            progressBar.removeAllViews();
+                int parentWidth = progressBar.getWidth();
+                int itemWidth = (int) (parentWidth * 0.18f);
 
-            for (int i = 0; i < total; i++) {
-                ImageView barItem = new ImageView(this);
-                barItem.setImageResource(R.drawable.loading_bar_item_empty);
+                progressBar.removeAllViews();
 
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                params.setMargins(4, 0, 4, 0);
-                barItem.setLayoutParams(params);
+                for (int i = 0; i < total; i++) {
+                    ImageView barItem = new ImageView(this);
+                    barItem.setImageResource(R.drawable.loading_bar_item_empty);
 
-                if (i < completed) {
-                    barItem.setImageResource(R.drawable.loading_bar_item);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            itemWidth,
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                    );
+
+                    params.setMargins(5, 0, 5, 0);
+                    barItem.setLayoutParams(params);
+
+                    if (i < completed) {
+                        barItem.setImageResource(R.drawable.loading_bar_item);
+                    }
+
+                    progressBar.addView(barItem);
                 }
-
-                progressBar.addView(barItem);
-            }
+            });
         });
 
 
@@ -117,9 +124,15 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout btnGenerateMock = findViewById(R.id.btnGenerateMock);
         LinearLayout btnCards = findViewById(R.id.buttonCards);
+        LinearLayout btnAlarms = findViewById(R.id.buttonClock);
 
         btnCards.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CardsActivity.class);
+            startActivity(intent);
+        });
+
+        btnAlarms.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AlarmsActivity.class);
             startActivity(intent);
         });
 
@@ -183,29 +196,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         checkNotificationPermission();
-    }
-
-
-    private void createTest() {
-
-
-        int habitId = 1;
-        Calendar now = Calendar.getInstance();
-        int hour = now.get(Calendar.HOUR_OF_DAY);
-        int minute = now.get(Calendar.MINUTE) + 1;
-
-
-        if (minute >= 60) {
-            minute -= 60;
-            hour = (hour + 1) % 24;
-        }
-
-
-        Alarm alarm = container.getCreateAlarmUseCase().execute(habitId, hour, minute);
-        container.getScheduleAlarmUseCase().execute(alarm);
-
-
-        viewModel.loadData();
     }
 
     private void checkNotificationPermission() {
