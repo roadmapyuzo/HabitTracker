@@ -60,6 +60,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
         holder.progressDotsContainer.removeAllViews();
 
+        if (data.getHabit().isActiveAlarms()) {
+
+            holder.btnAlarm.setBackgroundResource(R.drawable.alarm_button_on);
+
+        } else {
+            holder.btnAlarm.setBackgroundResource(R.drawable.alarm_button);
+        }
+
+        holder.btnAlarm.setOnClickListener(v -> {
+
+            if (data.getHabit().isActiveAlarms()) {
+                viewModel.deactivateAlarms(data.getHabit());
+            } else {
+                viewModel.activateAlarms(data.getHabit());
+            }
+
+        });
+
         int dailyGoal = data.getHabit().getDailyGoal();
         int goalStatus = data.getGoalStatus();
 
@@ -167,6 +185,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         LinearLayout area1;
         LinearLayout area2;
         ConstraintLayout expandArea;
+        ConstraintLayout btnAlarm;
         public MainViewHolder(View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtHabitName);
@@ -191,6 +210,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             daySquares[4] = itemView.findViewById(R.id.day5Square);
             daySquares[5] = itemView.findViewById(R.id.day6Square);
             daySquares[6] = itemView.findViewById(R.id.day7Square);
+
+            btnAlarm = itemView.findViewById(R.id.alarmLayout);
+
         }
 
     }

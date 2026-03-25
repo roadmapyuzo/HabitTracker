@@ -9,7 +9,7 @@
         </shape>
     </item>
 
-    <item android:drawable="@drawable/ic_alert_off"/>
+    <item android:drawable="@drawable/ic_alert_on"/>
 
 
 

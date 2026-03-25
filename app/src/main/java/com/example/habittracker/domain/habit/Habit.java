@@ -108,5 +108,10 @@ public class Habit {
 
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
 
 }

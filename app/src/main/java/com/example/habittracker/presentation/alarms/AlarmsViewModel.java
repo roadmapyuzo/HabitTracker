@@ -25,6 +25,19 @@ public class AlarmsViewModel {
     private DeleteAlarmUseCase deleteAlarmUseCase;
     private ScheduleAlarmUseCase scheduleAlarmUseCase;
 
+    public AlarmsViewModel(
+            GetHabitsUseCase getHabitsUseCase,
+            GetAlarmsByHabitUseCase getAlarmsByHabitUseCase,
+            CreateAlarmUseCase createAlarmUseCase,
+            DeleteAlarmUseCase deleteAlarmUseCase,
+            ScheduleAlarmUseCase scheduleAlarmUseCase) {
+        this.getHabitsUseCase = getHabitsUseCase;
+        this.getAlarmsByHabitUseCase = getAlarmsByHabitUseCase;
+        this.createAlarmUseCase = createAlarmUseCase;
+        this.deleteAlarmUseCase = deleteAlarmUseCase;
+        this.scheduleAlarmUseCase = scheduleAlarmUseCase;
+    }
+
     MutableLiveData<List<AlarmsDisplayDataHolder>> _displayData = new MutableLiveData<>();
 
     LiveData<List<AlarmsDisplayDataHolder>> displayData = _displayData;
@@ -50,6 +63,28 @@ public class AlarmsViewModel {
         }
 
         _displayData.setValue(list);
+
+    }
+
+    public List<Habit> getHabits() {
+
+        return getHabitsUseCase.execute();
+
+    }
+
+    public void createAlarm(int habitId, int hour, int minute) {
+
+        createAlarmUseCase.execute(habitId, hour, minute);
+
+        loadData();
+
+    }
+
+    public void deleteAlarm(Alarm alarm) {
+
+        deleteAlarmUseCase.execute(alarm.getId());
+
+        loadData();
 
     }
 

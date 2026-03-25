@@ -14,6 +14,7 @@ import com.example.habittracker.MyApplication;
 import com.example.habittracker.R;
 import com.example.habittracker.di.AppContainer;
 import com.example.habittracker.domain.habit.Habit;
+import com.example.habittracker.presentation.alarms.AlarmsActivity;
 import com.example.habittracker.presentation.main.MainActivity;
 import com.example.habittracker.presentation.main.MainDisplayDataHolder;
 
@@ -63,9 +64,15 @@ public class CardsActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(3);
 
         LinearLayout btnHome = findViewById(R.id.buttonHome);
+        LinearLayout btnAlarms = findViewById(R.id.buttonClock);
 
         btnHome.setOnClickListener(v -> {
             Intent intent = new Intent(CardsActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+
+        btnAlarms.setOnClickListener(v -> {
+            Intent intent = new Intent(CardsActivity.this, AlarmsActivity.class);
             startActivity(intent);
         });
 

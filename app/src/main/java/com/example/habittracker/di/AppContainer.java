@@ -45,6 +45,9 @@ import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCa
 import com.example.habittracker.app.alarms.useCases.CreateAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.DeleteAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
+import com.example.habittracker.presentation.alarms.AlarmsAdapter;
+import com.example.habittracker.presentation.alarms.AlarmsDisplayDataHolder;
+import com.example.habittracker.presentation.alarms.AlarmsViewModel;
 import com.example.habittracker.presentation.cards.CardsAdapter;
 import com.example.habittracker.presentation.cards.CardsDisplayDataHolder;
 import com.example.habittracker.presentation.cards.CardsViewModel;
@@ -116,6 +119,14 @@ public class AppContainer {
 
     private CardsViewModel cardsViewModel;
     private CardsAdapter cardsAdapter;
+
+    ///  Alarms UI
+
+    private AlarmsViewModel alarmsViewModel;
+    private AlarmsAdapter alarmsAdapter;
+
+
+    /// Here ends attribute creation
 
     public AppContainer(Context context) {
         this.context = context;
@@ -373,7 +384,10 @@ public class AppContainer {
                     getDateProvider(),
                     getRegisterHabitExecutionUseCase(),
                     getStreakRepository(),
-                    getCreateHabitUseCase()
+                    getCreateHabitUseCase(),
+                    getActivateHabitAlarmsUseCase(),
+                    getDeactivateHabitAlarmsUseCase(),
+                    getGetHabitByIdUseCase()
             );
         }
         return mainViewModel;
@@ -443,6 +457,35 @@ public class AppContainer {
         }
 
         return cardsAdapter;
+    }
+
+    ///  Alarms UI
+
+    public AlarmsViewModel getAlarmsViewModel() {
+        if (alarmsViewModel == null) {
+
+            alarmsViewModel = new AlarmsViewModel(
+                    getGetHabitsUseCase(),
+                    getGetAlarmsByHabitUseCase(),
+                    getCreateAlarmUseCase(),
+                    getDeleteAlarmUseCase(),
+                    getScheduleAlarmUseCase()
+            );
+
+        }
+
+        return alarmsViewModel;
+    }
+
+    public AlarmsAdapter getAlarmsAdapter() {
+
+        List<AlarmsDisplayDataHolder> initialList = new ArrayList<>();
+
+        if (alarmsAdapter == null) {
+            alarmsAdapter = new AlarmsAdapter(initialList, getAlarmsViewModel());
+        }
+
+        return alarmsAdapter;
     }
 
 

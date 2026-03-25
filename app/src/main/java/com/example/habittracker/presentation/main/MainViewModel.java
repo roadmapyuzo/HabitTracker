@@ -8,7 +8,10 @@ import com.example.habittracker.app.DateProvider;
 import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.RegisterHabitExecutionUseCase;
+import com.example.habittracker.app.habit.useCases.ActivateHabitAlarmUseCase;
 import com.example.habittracker.app.habit.useCases.CreateHabitUseCase;
+import com.example.habittracker.app.habit.useCases.DeactivateHabitAlarmUseCase;
+import com.example.habittracker.app.habit.useCases.GetHabitByIdUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
 import com.example.habittracker.domain.dailyRecord.Record;
 import com.example.habittracker.domain.habit.Habit;
@@ -25,6 +28,9 @@ public class MainViewModel extends ViewModel {
    private DateProvider dateProvider;
    private CreateHabitUseCase createHabitUseCase;
    private RegisterHabitExecutionUseCase registerHabitExecutionUseCase;
+   private ActivateHabitAlarmUseCase activateHabitAlarmUseCase;
+   private DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase;
+   private GetHabitByIdUseCase getHabitByIdUseCase;
 
    private StreakRepository streakRepository;
 
@@ -36,7 +42,7 @@ public class MainViewModel extends ViewModel {
     public LiveData<Integer> streak = _streak;
 
 
-    public MainViewModel (GetHabitsUseCase getHabitsUseCase, GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase, GetHabitWeekStatusUseCase getHabitWeekStatusUseCase, DateProvider dateProvider, RegisterHabitExecutionUseCase registerHabitExecutionUseCase, StreakRepository streakRepository, CreateHabitUseCase createHabitUseCase) {
+    public MainViewModel (GetHabitsUseCase getHabitsUseCase, GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase, GetHabitWeekStatusUseCase getHabitWeekStatusUseCase, DateProvider dateProvider, RegisterHabitExecutionUseCase registerHabitExecutionUseCase, StreakRepository streakRepository, CreateHabitUseCase createHabitUseCase, ActivateHabitAlarmUseCase activateHabitAlarmUseCase, DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase, GetHabitByIdUseCase getHabitByIdUseCase) {
        this.getHabitsUseCase = getHabitsUseCase;
        this.getHabitWeekStatusUseCase = getHabitWeekStatusUseCase;
        this.getRecordByHabitAndDateUseCase = getRecordByHabitAndDateUseCase;
@@ -44,6 +50,9 @@ public class MainViewModel extends ViewModel {
        this.registerHabitExecutionUseCase = registerHabitExecutionUseCase;
        this.streakRepository = streakRepository;
        this.createHabitUseCase = createHabitUseCase;
+       this.activateHabitAlarmUseCase = activateHabitAlarmUseCase;
+       this.deactivateHabitAlarmUseCase = deactivateHabitAlarmUseCase;
+       this.getHabitByIdUseCase = getHabitByIdUseCase;
    }
 
    public void loadData() {
@@ -103,6 +112,18 @@ public class MainViewModel extends ViewModel {
         for (MainDisplayDataHolder item : currentList) {
             if (item.getHabit().getId().equals(habit.getId())) {
 
+                Habit newHabit = getHabitByIdUseCase.execute(item.getHabit().getId());
+
+                if (newHabit.isActiveAlarms() != item.getHabit().isActiveAlarms()) {
+
+                    if (newHabit.isActiveAlarms()) {
+                        item.getHabit().activateAlarms();
+                    } else {
+                        item.getHabit().deactivateAlarms();
+                    }
+
+                }
+
                 List<Boolean> weekStatus = getHabitWeekStatusUseCase.execute(habit.getId());
 
                 item.setWeekStatus(weekStatus);
@@ -110,6 +131,8 @@ public class MainViewModel extends ViewModel {
                 Record record = getRecordByHabitAndDateUseCase.execute(habit.getId(), dateProvider.today());
 
                 item.setGoalStatus(record != null ? record.getNumberOfTimes() : 0);
+
+
                 break;
             }
         }
@@ -171,6 +194,22 @@ public class MainViewModel extends ViewModel {
     public void createHabit(String name, int goal) {
 
         createHabitUseCase.execute(name, goal, false);
+
+        loadData();
+
+    }
+
+    public void activateAlarms(Habit habit) {
+
+        activateHabitAlarmUseCase.execute(habit.getId());
+
+        loadData();
+
+    }
+
+    public void deactivateAlarms(Habit habit) {
+
+        deactivateHabitAlarmUseCase.execute(habit.getId());
 
         loadData();
 

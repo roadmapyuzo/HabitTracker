@@ -1,5 +1,6 @@
 package com.example.habittracker.presentation.alarms;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.habittracker.R;
+import com.example.habittracker.domain.alarms.Alarm;
+import com.example.habittracker.presentation.cards.CardsDisplayDataHolder;
 
 import java.util.List;
 
 public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewHolder> {
 
     private List<AlarmsDisplayDataHolder> datalist;
+    private AlarmsViewModel viewModel;
 
-    public AlarmsAdapter(List<AlarmsDisplayDataHolder> datalist) {
+    public AlarmsAdapter(List<AlarmsDisplayDataHolder> datalist,AlarmsViewModel viewModel) {
         this.datalist = datalist;
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -29,6 +34,11 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewH
         return new AlarmViewHolder(view);
     }
 
+    public void updateData(List<AlarmsDisplayDataHolder> newDataList) {
+        this.datalist = newDataList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull AlarmViewHolder holder, int position) {
 
@@ -36,15 +46,38 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewH
 
         holder.txtHabitName.setText(item.getHabit().getName());
 
+        LayoutInflater inflater = LayoutInflater.from(holder.itemView.getContext());
 
-        holder.area2.setOnClickListener(v -> {
-
-        });
+        holder.subitemarea.removeAllViews();
 
 
-        holder.area1.setOnClickListener(v -> {
 
-        });
+        for (Alarm alarm : item.getAlarms()) {
+
+
+            View alarmCard = inflater.inflate(R.layout.alarm_subitem_list, holder.subitemarea, false);
+
+            TextView txtAlarmTime = alarmCard.findViewById(R.id.txtTime);
+
+            String formatedTime;
+
+            formatedTime = String.valueOf(alarm.getHour()) + ":"+ String.valueOf(alarm.getMinute());
+
+            txtAlarmTime.setText(formatedTime);
+
+            LinearLayout deleteButton = alarmCard.findViewById(R.id.area2);
+            deleteButton.setOnClickListener(v -> {
+
+                viewModel.deleteAlarm(alarm);
+
+            });
+
+            holder.subitemarea.addView(alarmCard);
+
+
+        }
+
+
     }
 
     @Override
@@ -56,6 +89,7 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewH
 
         TextView txtHabitName;
         LinearLayout area1, area2;
+        LinearLayout subitemarea;
 
         public AlarmViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +97,7 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewH
             txtHabitName = itemView.findViewById(R.id.txtHabitName);
             area1 = itemView.findViewById(R.id.area1);
             area2 = itemView.findViewById(R.id.area2);
+            subitemarea = itemView.findViewById(R.id.subitemArea);
         }
     }
 }
