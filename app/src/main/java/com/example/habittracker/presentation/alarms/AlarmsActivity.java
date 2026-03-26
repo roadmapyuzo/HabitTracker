@@ -111,9 +111,9 @@ public class AlarmsActivity extends AppCompatActivity {
             picker1.setValue(1);
             picker1.setWrapSelectorWheel(true);
 
-            picker2.setMinValue(1);
+            picker2.setMinValue(0);
             picker2.setMaxValue(59);
-            picker2.setValue(1);
+            picker2.setValue(0);
             picker2.setWrapSelectorWheel(true);
 
             picker1.setTextColor(Color.WHITE);

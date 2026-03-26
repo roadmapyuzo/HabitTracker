@@ -11,6 +11,8 @@ public final class DatabaseContract {
         public static final String COL_NAME = "name";
         public static final String COL_DAILY_GOAL = "dailyGoal";
         public static final String COL_ACTIVE_ALARMS = "activeAlarms";
+        public static final String COL_STREAK = "streak";
+        public static final String COL_START = "start";
     }
 
     public static class AlarmTable {

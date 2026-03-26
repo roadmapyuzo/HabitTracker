@@ -113,6 +113,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/startDateText2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="25/12/2025"
@@ -147,6 +148,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/sequenceNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -240,6 +242,8 @@
             android:id="@+id/buttonDelete"
             android:layout_width="match_parent"
             android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_weight="1"
             android:background="@drawable/card_delete_button_background"
             android:layout_height="30dp">
@@ -260,6 +264,8 @@
             android:id="@+id/buttonCheck"
             android:layout_width="match_parent"
             android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_weight="1"
             android:background="@drawable/card_check_button_background"
             android:layout_height="30dp">

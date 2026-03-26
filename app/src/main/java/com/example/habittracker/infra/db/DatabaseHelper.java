@@ -23,7 +23,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         DatabaseContract.HabitTable.COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         DatabaseContract.HabitTable.COL_NAME + " TEXT NOT NULL," +
                         DatabaseContract.HabitTable.COL_DAILY_GOAL + " INTEGER NOT NULL," +
-                        DatabaseContract.HabitTable.COL_ACTIVE_ALARMS + " INTEGER NOT NULL" +
+                        DatabaseContract.HabitTable.COL_ACTIVE_ALARMS + " INTEGER NOT NULL," +
+                        DatabaseContract.HabitTable.COL_STREAK + " INTEGER NOT NULL DEFAULT 0," +
+                        DatabaseContract.HabitTable.COL_START + " TEXT NOT NULL" +
                         ");"
         );
 

@@ -3,11 +3,15 @@ package com.example.habittracker.presentation.alarms;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.habittracker.app.alarms.useCases.CancelAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.CreateAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.DeleteAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
 import com.example.habittracker.app.alarms.useCases.ScheduleAlarmUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordsByHabitUseCase;
+import com.example.habittracker.app.habit.useCases.ActivateHabitAlarmUseCase;
+import com.example.habittracker.app.habit.useCases.DeactivateHabitAlarmUseCase;
+import com.example.habittracker.app.habit.useCases.GetHabitByIdUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
 import com.example.habittracker.domain.alarms.Alarm;
 import com.example.habittracker.domain.dailyRecord.Record;
@@ -24,18 +28,30 @@ public class AlarmsViewModel {
     private CreateAlarmUseCase createAlarmUseCase;
     private DeleteAlarmUseCase deleteAlarmUseCase;
     private ScheduleAlarmUseCase scheduleAlarmUseCase;
+    private ActivateHabitAlarmUseCase activateHabitAlarmUseCase;
+    private DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase;
+    private GetHabitByIdUseCase getHabitByIdUseCase;
+    private CancelAlarmUseCase cancelAlarmUseCase;
 
     public AlarmsViewModel(
             GetHabitsUseCase getHabitsUseCase,
             GetAlarmsByHabitUseCase getAlarmsByHabitUseCase,
             CreateAlarmUseCase createAlarmUseCase,
             DeleteAlarmUseCase deleteAlarmUseCase,
-            ScheduleAlarmUseCase scheduleAlarmUseCase) {
+            ScheduleAlarmUseCase scheduleAlarmUseCase,
+            ActivateHabitAlarmUseCase activateHabitAlarmUseCase,
+            DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase,
+            GetHabitByIdUseCase getHabitByIdUseCase,
+            CancelAlarmUseCase cancelAlarmUseCase) {
         this.getHabitsUseCase = getHabitsUseCase;
         this.getAlarmsByHabitUseCase = getAlarmsByHabitUseCase;
         this.createAlarmUseCase = createAlarmUseCase;
         this.deleteAlarmUseCase = deleteAlarmUseCase;
         this.scheduleAlarmUseCase = scheduleAlarmUseCase;
+        this.activateHabitAlarmUseCase = activateHabitAlarmUseCase;
+        this.deactivateHabitAlarmUseCase = deactivateHabitAlarmUseCase;
+        this.getHabitByIdUseCase = getHabitByIdUseCase;
+        this.cancelAlarmUseCase = cancelAlarmUseCase;
     }
 
     MutableLiveData<List<AlarmsDisplayDataHolder>> _displayData = new MutableLiveData<>();
@@ -74,7 +90,13 @@ public class AlarmsViewModel {
 
     public void createAlarm(int habitId, int hour, int minute) {
 
-        createAlarmUseCase.execute(habitId, hour, minute);
+        Habit habit = getHabitByIdUseCase.execute(habitId);
+
+        Alarm alarm = createAlarmUseCase.execute(habitId, hour, minute);
+
+        if (habit.isActiveAlarms()) {
+            scheduleAlarmUseCase.execute(alarm);
+        }
 
         loadData();
 
@@ -82,7 +104,41 @@ public class AlarmsViewModel {
 
     public void deleteAlarm(Alarm alarm) {
 
+        cancelAlarmUseCase.execute(alarm);
+
         deleteAlarmUseCase.execute(alarm.getId());
+
+        loadData();
+
+    }
+
+    public void activateAlarms(Habit habit) {
+
+        activateHabitAlarmUseCase.execute(habit.getId());
+
+        List<Alarm> alarms = getAlarmsByHabitUseCase.execute(habit.getId());
+
+        for (Alarm alarm : alarms) {
+
+            scheduleAlarmUseCase.execute(alarm);
+
+        }
+
+        loadData();
+
+    }
+
+    public void deactivateAlarms(Habit habit) {
+
+        deactivateHabitAlarmUseCase.execute(habit.getId());
+
+        List<Alarm> alarms = getAlarmsByHabitUseCase.execute(habit.getId());
+
+        for (Alarm alarm : alarms) {
+
+            cancelAlarmUseCase.execute(alarm);
+
+        }
 
         loadData();
 

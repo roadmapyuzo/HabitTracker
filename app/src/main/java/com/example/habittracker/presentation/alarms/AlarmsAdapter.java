@@ -50,7 +50,25 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewH
 
         holder.subitemarea.removeAllViews();
 
+        if (item.getHabit().isActiveAlarms()) {
 
+            holder.btnAlarm.setBackgroundResource(R.drawable.alarm_button_on);
+
+        } else {
+            holder.btnAlarm.setBackgroundResource(R.drawable.alarm_button);
+        }
+
+        holder.btnAlarm.setOnClickListener(v -> {
+
+            v.postDelayed(() -> {
+                if (item.getHabit().isActiveAlarms()) {
+                    viewModel.deactivateAlarms(item.getHabit());
+                } else {
+                    viewModel.activateAlarms(item.getHabit());
+                }
+            }, 300);
+
+        });
 
         for (Alarm alarm : item.getAlarms()) {
 
@@ -88,16 +106,18 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewH
     static class AlarmViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtHabitName;
-        LinearLayout area1, area2;
+        LinearLayout area1;
         LinearLayout subitemarea;
+
+        LinearLayout btnAlarm;
 
         public AlarmViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtHabitName = itemView.findViewById(R.id.txtHabitName);
             area1 = itemView.findViewById(R.id.area1);
-            area2 = itemView.findViewById(R.id.area2);
             subitemarea = itemView.findViewById(R.id.subitemArea);
+            btnAlarm = itemView.findViewById(R.id.area2);
         }
     }
 }

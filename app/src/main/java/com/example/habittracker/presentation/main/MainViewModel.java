@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.habittracker.app.DateProvider;
+import com.example.habittracker.app.alarms.useCases.CancelAlarmUseCase;
+import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
+import com.example.habittracker.app.alarms.useCases.ScheduleAlarmUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.RegisterHabitExecutionUseCase;
@@ -13,6 +16,8 @@ import com.example.habittracker.app.habit.useCases.CreateHabitUseCase;
 import com.example.habittracker.app.habit.useCases.DeactivateHabitAlarmUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitByIdUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
+import com.example.habittracker.app.habit.useCases.IncrementHabitStreakUseCase;
+import com.example.habittracker.domain.alarms.Alarm;
 import com.example.habittracker.domain.dailyRecord.Record;
 import com.example.habittracker.domain.habit.Habit;
 import com.example.habittracker.infra.repository.StreakRepository;
@@ -31,6 +36,10 @@ public class MainViewModel extends ViewModel {
    private ActivateHabitAlarmUseCase activateHabitAlarmUseCase;
    private DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase;
    private GetHabitByIdUseCase getHabitByIdUseCase;
+   private IncrementHabitStreakUseCase incrementHabitStreakUseCase;
+   private GetAlarmsByHabitUseCase getAlarmsByHabitUseCase;
+   private ScheduleAlarmUseCase scheduleAlarmUseCase;
+   private CancelAlarmUseCase cancelAlarmUseCase;
 
    private StreakRepository streakRepository;
 
@@ -42,7 +51,7 @@ public class MainViewModel extends ViewModel {
     public LiveData<Integer> streak = _streak;
 
 
-    public MainViewModel (GetHabitsUseCase getHabitsUseCase, GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase, GetHabitWeekStatusUseCase getHabitWeekStatusUseCase, DateProvider dateProvider, RegisterHabitExecutionUseCase registerHabitExecutionUseCase, StreakRepository streakRepository, CreateHabitUseCase createHabitUseCase, ActivateHabitAlarmUseCase activateHabitAlarmUseCase, DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase, GetHabitByIdUseCase getHabitByIdUseCase) {
+    public MainViewModel (GetHabitsUseCase getHabitsUseCase, GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase, GetHabitWeekStatusUseCase getHabitWeekStatusUseCase, DateProvider dateProvider, RegisterHabitExecutionUseCase registerHabitExecutionUseCase, StreakRepository streakRepository, CreateHabitUseCase createHabitUseCase, ActivateHabitAlarmUseCase activateHabitAlarmUseCase, DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase, GetHabitByIdUseCase getHabitByIdUseCase, IncrementHabitStreakUseCase incrementHabitStreakUseCase, GetAlarmsByHabitUseCase getAlarmsByHabitUseCase, ScheduleAlarmUseCase scheduleAlarmUseCase, CancelAlarmUseCase cancelAlarmUseCase) {
        this.getHabitsUseCase = getHabitsUseCase;
        this.getHabitWeekStatusUseCase = getHabitWeekStatusUseCase;
        this.getRecordByHabitAndDateUseCase = getRecordByHabitAndDateUseCase;
@@ -53,6 +62,10 @@ public class MainViewModel extends ViewModel {
        this.activateHabitAlarmUseCase = activateHabitAlarmUseCase;
        this.deactivateHabitAlarmUseCase = deactivateHabitAlarmUseCase;
        this.getHabitByIdUseCase = getHabitByIdUseCase;
+       this.incrementHabitStreakUseCase = incrementHabitStreakUseCase;
+       this.getAlarmsByHabitUseCase = getAlarmsByHabitUseCase;
+       this.scheduleAlarmUseCase = scheduleAlarmUseCase;
+       this.cancelAlarmUseCase = cancelAlarmUseCase;
    }
 
    public void loadData() {
@@ -132,6 +145,9 @@ public class MainViewModel extends ViewModel {
 
                 item.setGoalStatus(record != null ? record.getNumberOfTimes() : 0);
 
+                if (item.getGoalStatus() == item.getHabit().getDailyGoal()) {
+                    incrementHabitStreak(item.getHabit());
+                }
 
                 break;
             }
@@ -203,6 +219,14 @@ public class MainViewModel extends ViewModel {
 
         activateHabitAlarmUseCase.execute(habit.getId());
 
+        List<Alarm> alarms = getAlarmsByHabitUseCase.execute(habit.getId());
+
+        for (Alarm alarm : alarms) {
+
+            scheduleAlarmUseCase.execute(alarm);
+
+        }
+
         loadData();
 
     }
@@ -211,7 +235,21 @@ public class MainViewModel extends ViewModel {
 
         deactivateHabitAlarmUseCase.execute(habit.getId());
 
+        List<Alarm> alarms = getAlarmsByHabitUseCase.execute(habit.getId());
+
+        for (Alarm alarm : alarms) {
+
+            cancelAlarmUseCase.execute(alarm);
+
+        }
+
         loadData();
+
+    }
+
+    public void incrementHabitStreak (Habit habit) {
+
+        incrementHabitStreakUseCase.execute(habit.getId());
 
     }
 

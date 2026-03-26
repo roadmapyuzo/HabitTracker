@@ -70,11 +70,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
         holder.btnAlarm.setOnClickListener(v -> {
 
-            if (data.getHabit().isActiveAlarms()) {
-                viewModel.deactivateAlarms(data.getHabit());
-            } else {
-                viewModel.activateAlarms(data.getHabit());
-            }
+            v.postDelayed(() -> {
+                if (data.getHabit().isActiveAlarms()) {
+                    viewModel.deactivateAlarms(data.getHabit());
+                } else {
+                    viewModel.activateAlarms(data.getHabit());
+                }
+            }, 300);
 
         });
 
@@ -130,7 +132,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         }
 
         holder.buttonCheck.setOnClickListener(v -> {
-            viewModel.incrementHabit(data.getHabit());
+
+            v.postDelayed(() -> {
+                viewModel.incrementHabit(data.getHabit());
+            }, 300);
+
         });
 
         for (int i = 0; i < 7; i++) {

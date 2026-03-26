@@ -21,7 +21,9 @@ public class HabitRepositoryImpl extends BaseSQLRepository<Habit> implements Hab
                         com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_ID,
                         com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_NAME,
                         com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_DAILY_GOAL,
-                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_ACTIVE_ALARMS
+                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_ACTIVE_ALARMS,
+                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_STREAK,
+                        com.example.habittracker.infra.db.DatabaseContract.HabitTable.COL_START
                 },
                 mapper
         );
@@ -33,6 +35,8 @@ public class HabitRepositoryImpl extends BaseSQLRepository<Habit> implements Hab
         values.put(DatabaseContract.HabitTable.COL_NAME, habit.getName());
         values.put(DatabaseContract.HabitTable.COL_DAILY_GOAL, habit.getDailyGoal());
         values.put(DatabaseContract.HabitTable.COL_ACTIVE_ALARMS, habit.isActiveAlarms() ? 1 : 0);
+        values.put(DatabaseContract.HabitTable.COL_STREAK, habit.getStreak());
+        values.put(DatabaseContract.HabitTable.COL_START, habit.getStart().toString());
 
         if (habit.getId() == null) {
             long id = insert(values);

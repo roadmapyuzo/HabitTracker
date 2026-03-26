@@ -1,5 +1,7 @@
 package com.example.habittracker.domain.habit;
 
+import java.time.LocalDate;
+
 public class Habit {
 
     Integer id;
@@ -7,8 +9,9 @@ public class Habit {
     int dailyGoal;
     boolean activeAlarms;
     int streak;
+    LocalDate start;
 
-    public Habit (Integer id,String name, int goal, boolean alarms) {
+    public Habit (Integer id,String name, int goal, boolean alarms, int streak, LocalDate start) {
 
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null");
@@ -22,7 +25,8 @@ public class Habit {
         this.name = name;
         this.dailyGoal = goal;
         this.activeAlarms = alarms;
-        this.streak = 0;
+        this.streak = streak;
+        this.start = start;
 
     }
 
@@ -36,6 +40,10 @@ public class Habit {
 
     public Integer getId() {
         return id;
+    }
+
+    public LocalDate getStart() {
+        return start;
     }
 
     public boolean isActiveAlarms() {

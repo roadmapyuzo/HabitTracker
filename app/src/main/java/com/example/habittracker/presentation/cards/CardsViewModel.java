@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.habittracker.app.DateProvider;
+import com.example.habittracker.app.alarms.useCases.CancelAlarmUseCase;
+import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
+import com.example.habittracker.app.alarms.useCases.ScheduleAlarmUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordByHabitAndDateUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.GetRecordsByHabitUseCase;
 import com.example.habittracker.app.dailyRecord.useCases.IncrementRecordUseCase;
@@ -14,6 +17,7 @@ import com.example.habittracker.app.habit.useCases.DeleteHabitUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitByIdUseCase;
 import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
 import com.example.habittracker.app.habit.useCases.IncrementHabitStreakUseCase;
+import com.example.habittracker.domain.alarms.Alarm;
 import com.example.habittracker.domain.dailyRecord.Record;
 import com.example.habittracker.domain.habit.Habit;
 import com.example.habittracker.infra.repository.StreakRepository;
@@ -35,7 +39,9 @@ public class CardsViewModel {
     private DateProvider dateProvider;
     private GetHabitByIdUseCase getHabitByIdUseCase;
     private DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase;
-
+    private GetAlarmsByHabitUseCase getAlarmsByHabitUseCase;
+    private ScheduleAlarmUseCase scheduleAlarmUseCase;
+    private CancelAlarmUseCase cancelAlarmUseCase;
 
     MutableLiveData<List<CardsDisplayDataHolder>> _displayData = new MutableLiveData<>();
 
@@ -52,7 +58,10 @@ public class CardsViewModel {
             GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase,
             DateProvider dateProvider,
             GetHabitByIdUseCase getHabitByIdUseCase,
-            DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase
+            DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase,
+            GetAlarmsByHabitUseCase getAlarmsByHabitUseCase,
+            ScheduleAlarmUseCase scheduleAlarmUseCase,
+            CancelAlarmUseCase cancelAlarmUseCase
     ) {
         this.activateHabitAlarmUseCase = activateHabitAlarmUseCase;
         this.getHabitsUseCase = getHabitsUseCase;
@@ -65,6 +74,9 @@ public class CardsViewModel {
         this.dateProvider = dateProvider;
         this.getHabitByIdUseCase = getHabitByIdUseCase;
         this.deactivateHabitAlarmUseCase = deactivateHabitAlarmUseCase;
+        this.getAlarmsByHabitUseCase = getAlarmsByHabitUseCase;
+        this.scheduleAlarmUseCase = scheduleAlarmUseCase;
+        this.cancelAlarmUseCase = cancelAlarmUseCase;
     }
 
     public void loadData() {
@@ -122,11 +134,27 @@ public class CardsViewModel {
 
         activateHabitAlarmUseCase.execute(habit.getId());
 
+        List<Alarm> alarms = getAlarmsByHabitUseCase.execute(habit.getId());
+
+        for (Alarm alarm : alarms) {
+
+            scheduleAlarmUseCase.execute(alarm);
+
+        }
+
     }
 
     public void deactivateNotifications(Habit habit) {
 
         deactivateHabitAlarmUseCase.execute(habit.getId());
+
+        List<Alarm> alarms = getAlarmsByHabitUseCase.execute(habit.getId());
+
+        for (Alarm alarm : alarms) {
+
+            cancelAlarmUseCase.execute(alarm);
+
+        }
 
     }
 
@@ -157,6 +185,11 @@ public class CardsViewModel {
 
                 item.setGoalStatus(goalStatus);
 
+                if (item.getGoalStatus() == item.getHabit().getDailyGoal()) {
+                    incrementHabitStreak(item.getHabit());
+                    newHabit.incrementStreak();
+                }
+
                 item.setHabit(newHabit);
 
                 return item;
@@ -165,9 +198,10 @@ public class CardsViewModel {
         return null;
     }
 
+    public void incrementHabitStreak (Habit habit) {
 
+        incrementHabitStreakUseCase.execute(habit.getId());
 
-
-
+    }
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.example.habittracker.app.alarms.AlarmRepository;
 import com.example.habittracker.app.alarms.NotificationScheduler;
+import com.example.habittracker.app.alarms.useCases.CancelAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.GetAlarmByIdUseCase;
 import com.example.habittracker.app.alarms.useCases.ScheduleAlarmUseCase;
 import com.example.habittracker.app.dailyRecord.DailyRecordRepository;
@@ -107,7 +108,7 @@ public class AppContainer {
     private GetAlarmsByHabitUseCase getAlarmsByHabitUseCase;
     private GetAlarmByIdUseCase getAlarmByIdUseCase;
     private ScheduleAlarmUseCase scheduleAlarmUseCase;
-
+    private CancelAlarmUseCase cancelAlarmUseCase;
 
 
     ///  main UI
@@ -201,7 +202,7 @@ public class AppContainer {
 
     public CreateHabitUseCase getCreateHabitUseCase() {
         if (createHabitUseCase == null) {
-            createHabitUseCase = new CreateHabitUseCase(getHabitRepository());
+            createHabitUseCase = new CreateHabitUseCase(getHabitRepository(), getDateProvider());
         }
         return createHabitUseCase;
     }
@@ -371,6 +372,15 @@ public class AppContainer {
         return scheduleAlarmUseCase;
     }
 
+    public CancelAlarmUseCase getCancelAlarmUseCase() {
+        if (cancelAlarmUseCase == null) {
+            cancelAlarmUseCase =
+                    new CancelAlarmUseCase(getNotificationScheduler());
+        }
+
+        return cancelAlarmUseCase;
+    }
+
 
 
     ///  main UI
@@ -387,7 +397,11 @@ public class AppContainer {
                     getCreateHabitUseCase(),
                     getActivateHabitAlarmsUseCase(),
                     getDeactivateHabitAlarmsUseCase(),
-                    getGetHabitByIdUseCase()
+                    getGetHabitByIdUseCase(),
+                    getIncrementHabitStreakUseCase(),
+                    getGetAlarmsByHabitUseCase(),
+                    getScheduleAlarmUseCase(),
+                    getCancelAlarmUseCase()
             );
         }
         return mainViewModel;
@@ -440,7 +454,10 @@ public class AppContainer {
                     getRecordByHabitAndDateUseCase(),
                     getDateProvider(),
                     getGetHabitByIdUseCase(),
-                    getDeactivateHabitAlarmsUseCase()
+                    getDeactivateHabitAlarmsUseCase(),
+                    getGetAlarmsByHabitUseCase(),
+                    getScheduleAlarmUseCase(),
+                    getCancelAlarmUseCase()
                     );
 
         }
@@ -469,7 +486,11 @@ public class AppContainer {
                     getGetAlarmsByHabitUseCase(),
                     getCreateAlarmUseCase(),
                     getDeleteAlarmUseCase(),
-                    getScheduleAlarmUseCase()
+                    getScheduleAlarmUseCase(),
+                    getActivateHabitAlarmsUseCase(),
+                    getDeactivateHabitAlarmsUseCase(),
+                    getGetHabitByIdUseCase(),
+                    getCancelAlarmUseCase()
             );
 
         }

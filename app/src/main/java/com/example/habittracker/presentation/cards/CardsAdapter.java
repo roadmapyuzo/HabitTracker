@@ -1,6 +1,8 @@
 package com.example.habittracker.presentation.cards;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +72,9 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
 
         holder.setFirst();
 
+        holder.startDate.setText(habit.getStart().toString());
+        holder.sequenceNumber.setText(String.valueOf(habit.getStreak()));
+
 
         holder.dailyProgress.post(() -> {
             int parentWidth = holder.dailyProgress.getWidth();
@@ -79,6 +84,14 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
 
             int goalStatus = item.getGoalStatus();
             int dailyGoal = habit.getDailyGoal();
+
+            if (goalStatus >= dailyGoal) {
+                holder.buttonIncrement.setEnabled(false);
+                holder.buttonIncrement.setAlpha(0.5f);
+            } else {
+                holder.buttonIncrement.setClickable(true);
+                holder.buttonIncrement.setAlpha(1f);
+            }
 
             for (int i = 0; i < dailyGoal; i++) {
 
@@ -137,24 +150,60 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
 
         holder.buttonIncrement.setOnClickListener(v -> {
 
-            viewModel.incrementHabit(habit);
+           v.postDelayed(() -> {
 
-            CardsDisplayDataHolder updatedItem = viewModel.updateDisplayDataForHabit(habit);
-            if (updatedItem != null) {
-                updateSingleItem(updatedItem);
-                holder.updateDailyProgress(updatedItem.getGoalStatus(), habit.getDailyGoal());
+               viewModel.incrementHabit(habit);
 
-                if (updatedItem.getGoalStatus() == habit.getDailyGoal()) {
-                    holder.updateCalendar(item);
-                }
+               CardsDisplayDataHolder updatedItem = viewModel.updateDisplayDataForHabit(habit);
+               if (updatedItem != null) {
+                   updateSingleItem(updatedItem);
+                   holder.updateDailyProgress(updatedItem.getGoalStatus(), habit.getDailyGoal());
 
-            }
+                   if (updatedItem.getGoalStatus() == habit.getDailyGoal()) {
+                       holder.updateCalendar(item);
+                   }
+
+               }
+
+           }, 300);
 
         });
 
         holder.buttonDelete.setOnClickListener(v -> {
 
-            viewModel.deleteHabit(habit);
+
+            LayoutInflater inflater = LayoutInflater.from(holder.context);
+            View dialogView = inflater.inflate(R.layout.confirm_delete_modal, null);
+
+
+            final Dialog dialog = new Dialog(holder.context);
+            dialog.setContentView(dialogView);
+            dialog.setCancelable(true);
+
+
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+
+                int width = (int)(holder.context.getResources().getDisplayMetrics().widthPixels * 0.8f);
+                dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+
+
+            Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+            Button btnContinue = dialogView.findViewById(R.id.btnContinue);
+
+
+            btnCancel.setOnClickListener(view -> dialog.dismiss());
+
+
+            btnContinue.setOnClickListener(view -> {
+                viewModel.deleteHabit(habit);
+                dialog.dismiss();
+            });
+
+
+            dialog.show();
 
 
         });
@@ -180,6 +229,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
         Context context;
         LinearLayout buttonDelete;
         LinearLayout buttonIncrement;
+        TextView startDate;
+        TextView sequenceNumber;
 
 
         public HabitViewHolder(@NonNull View itemView) {
@@ -193,7 +244,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
             buttonNext = itemView.findViewById(R.id.buttonNextMonth);
             buttonDelete = itemView.findViewById(R.id.buttonDelete);
             buttonIncrement = itemView.findViewById(R.id.buttonCheck);
-
+            startDate = itemView.findViewById(R.id.startDateText2);
+            sequenceNumber = itemView.findViewById(R.id.sequenceNumber);
         }
 
         void setFirst() {
@@ -225,6 +277,8 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
         }
 
         void updateCalendar(CardsDisplayDataHolder updatedItem) {
+
+            sequenceNumber.setText(String.valueOf(updatedItem.getHabit().getStreak()));
             if (calendarAdapter != null) {
                 calendarAdapter.updateData(updatedItem);
                 calendarViewPager.setCurrentItem(calendarAdapter.getItemCount() - 1, false);
