@@ -2,6 +2,7 @@ package com.example.habittracker.di;
 
 import android.content.Context;
 
+import com.example.habittracker.app.StreakManager;
 import com.example.habittracker.app.alarms.AlarmRepository;
 import com.example.habittracker.app.alarms.NotificationScheduler;
 import com.example.habittracker.app.alarms.useCases.CancelAlarmUseCase;
@@ -24,6 +25,7 @@ import com.example.habittracker.app.habit.useCases.GetHabitsUseCase;
 import com.example.habittracker.app.habit.useCases.IncrementHabitStreakUseCase;
 import com.example.habittracker.app.habit.useCases.ResetHabitStreakUseCase;
 
+import com.example.habittracker.app.orchestration.VerifyStreaksUseCase;
 import com.example.habittracker.infra.DateProviderImpl;
 import com.example.habittracker.infra.db.DatabaseHelper;
 
@@ -46,6 +48,7 @@ import com.example.habittracker.app.dailyRecord.useCases.GetHabitWeekStatusUseCa
 import com.example.habittracker.app.alarms.useCases.CreateAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.DeleteAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
+import com.example.habittracker.infra.worker.VerifyStreakWorker;
 import com.example.habittracker.presentation.alarms.AlarmsAdapter;
 import com.example.habittracker.presentation.alarms.AlarmsDisplayDataHolder;
 import com.example.habittracker.presentation.alarms.AlarmsViewModel;
@@ -75,6 +78,13 @@ public class AppContainer {
     private HabitRepository habitRepository;
 
     private NotificationScheduler notificationScheduler;
+    private StreakManager streakManager;
+
+
+    /// orchestration use cases
+
+    private VerifyStreaksUseCase verifyStreaksUseCase;
+
 
     /// habit use cases
     private CreateHabitUseCase createHabitUseCase;
@@ -138,6 +148,13 @@ public class AppContainer {
             databaseHelper = new DatabaseHelper(context);
         }
         return databaseHelper;
+    }
+
+    public StreakManager getStreakManager() {
+        if (streakManager == null) {
+            streakManager = new StreakRepository(context,getDateProvider());
+        }
+        return streakManager;
     }
 
     public DateProvider getDateProvider() {
@@ -293,7 +310,8 @@ public class AppContainer {
                     new RegisterHabitExecutionUseCase(
                             getDailyRecordRepository(),
                             getDateProvider(),
-                            getCreateRecordUseCase()
+                            getCreateRecordUseCase(),
+                            getIncrementRecordUseCase()
                     );
         }
         return registerHabitExecutionUseCase;
@@ -381,6 +399,19 @@ public class AppContainer {
         return cancelAlarmUseCase;
     }
 
+    /// orchestration
+
+    public VerifyStreaksUseCase getVerifyStreaksUseCase() {
+        if (verifyStreaksUseCase == null) {
+            verifyStreaksUseCase = new VerifyStreaksUseCase(
+                    getHabitRepository(),
+                    getDailyRecordRepository(),
+                    getStreakManager(),
+                    getDateProvider()
+            );
+        }
+        return verifyStreaksUseCase;
+    }
 
 
     ///  main UI
@@ -431,7 +462,7 @@ public class AppContainer {
     public StreakRepository getStreakRepository() {
         if (streakRepository == null) {
 
-            streakRepository = new StreakRepository(context);
+            streakRepository = new StreakRepository(context, getDateProvider());
 
         }
 

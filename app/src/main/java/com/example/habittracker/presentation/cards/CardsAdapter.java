@@ -156,6 +156,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
 
                CardsDisplayDataHolder updatedItem = viewModel.updateDisplayDataForHabit(habit);
                if (updatedItem != null) {
+                   viewModel.verifyStreak();
                    updateSingleItem(updatedItem);
                    holder.updateDailyProgress(updatedItem.getGoalStatus(), habit.getDailyGoal());
 
@@ -199,6 +200,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.HabitViewHol
 
             btnContinue.setOnClickListener(view -> {
                 viewModel.deleteHabit(habit);
+                viewModel.verifyStreak();
                 dialog.dismiss();
             });
 

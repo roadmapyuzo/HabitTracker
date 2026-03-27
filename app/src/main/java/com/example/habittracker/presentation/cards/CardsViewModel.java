@@ -23,6 +23,7 @@ import com.example.habittracker.domain.habit.Habit;
 import com.example.habittracker.infra.repository.StreakRepository;
 import com.example.habittracker.presentation.main.MainDisplayDataHolder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -203,5 +204,36 @@ public class CardsViewModel {
         incrementHabitStreakUseCase.execute(habit.getId());
 
     }
+
+    public void incrementarStreak() {
+        int newStreak = streakRepository.getStreak() + 1;
+        streakRepository.saveStreak(newStreak);
+        streakRepository.saveLastStreakDate(dateProvider.today().toString());
+    }
+    public void verifyStreak() {
+        List<CardsDisplayDataHolder> list = _displayData.getValue();
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        for (CardsDisplayDataHolder item : list) {
+            Habit habit = item.getHabit();
+            int goalStatus = item.getGoalStatus();
+
+            if (goalStatus < habit.getDailyGoal()) {
+                return;
+            }
+
+        }
+
+        if (!LocalDate.parse(streakRepository.getLastStreakDate()).equals(dateProvider.today())) {
+
+            incrementarStreak();
+
+        }
+
+
+    }
+
 
 }

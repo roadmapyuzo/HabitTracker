@@ -22,6 +22,7 @@ import com.example.habittracker.domain.dailyRecord.Record;
 import com.example.habittracker.domain.habit.Habit;
 import com.example.habittracker.infra.repository.StreakRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,7 +185,17 @@ public class MainViewModel extends ViewModel {
     public void incrementarStreak() {
         int newStreak = streakRepository.getStreak() + 1;
         streakRepository.saveStreak(newStreak);
+        streakRepository.saveLastStreakDate(dateProvider.today().toString());
         _streak.setValue(newStreak);
+    }
+
+    public void decrementStreak() {
+
+        int newStreak = streakRepository.getStreak() - 1;
+        streakRepository.saveStreak(newStreak);
+        streakRepository.saveLastStreakDate(dateProvider.today().minusDays(1).toString());
+        _streak.setValue(newStreak);
+
     }
 
     public void verifyStreak() {
@@ -203,13 +214,22 @@ public class MainViewModel extends ViewModel {
 
         }
 
-        incrementarStreak();
+        if (!LocalDate.parse(streakRepository.getLastStreakDate()).equals(dateProvider.today())) {
+
+            incrementarStreak();
+
+        }
+
 
     }
 
     public void createHabit(String name, int goal) {
 
         createHabitUseCase.execute(name, goal, false);
+
+        if (LocalDate.parse(streakRepository.getLastStreakDate()).equals(dateProvider.today())) {
+            decrementStreak();
+        }
 
         loadData();
 
