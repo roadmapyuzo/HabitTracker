@@ -83,6 +83,15 @@ public class AlarmsActivity extends AppCompatActivity {
             }
         });
 
+        alarmsViewModel.error.observe(this, errorMsg -> {
+            if (errorMsg != null) {
+                Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+
+                alarmsViewModel.clearError();
+            }
+        });
+
+
         LinearLayout btnCards = findViewById(R.id.buttonCards);
         LinearLayout btnHome = findViewById(R.id.buttonHome);
 

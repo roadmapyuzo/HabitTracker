@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.habittracker.app.DateProvider;
+import com.example.habittracker.app.ResultClass;
 import com.example.habittracker.app.alarms.useCases.CancelAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.GetAlarmsByHabitUseCase;
 import com.example.habittracker.app.alarms.useCases.ScheduleAlarmUseCase;
@@ -50,6 +51,9 @@ public class MainViewModel extends ViewModel {
     public LiveData<int[]> progressBarData = _progressBarData;
     private MutableLiveData<Integer> _streak = new MutableLiveData<>();
     public LiveData<Integer> streak = _streak;
+
+    private MutableLiveData<String> _error = new MutableLiveData<>();
+    public LiveData<String> error = _error;
 
 
     public MainViewModel (GetHabitsUseCase getHabitsUseCase, GetRecordByHabitAndDateUseCase getRecordByHabitAndDateUseCase, GetHabitWeekStatusUseCase getHabitWeekStatusUseCase, DateProvider dateProvider, RegisterHabitExecutionUseCase registerHabitExecutionUseCase, StreakRepository streakRepository, CreateHabitUseCase createHabitUseCase, ActivateHabitAlarmUseCase activateHabitAlarmUseCase, DeactivateHabitAlarmUseCase deactivateHabitAlarmUseCase, GetHabitByIdUseCase getHabitByIdUseCase, IncrementHabitStreakUseCase incrementHabitStreakUseCase, GetAlarmsByHabitUseCase getAlarmsByHabitUseCase, ScheduleAlarmUseCase scheduleAlarmUseCase, CancelAlarmUseCase cancelAlarmUseCase) {
@@ -225,7 +229,12 @@ public class MainViewModel extends ViewModel {
 
     public void createHabit(String name, int goal) {
 
-        createHabitUseCase.execute(name, goal, false);
+        ResultClass<Habit> result = createHabitUseCase.execute(name, goal, false);
+
+        if (result.isFailure()) {
+            _error.setValue(result.getError());
+            return;
+        }
 
         if (LocalDate.parse(streakRepository.getLastStreakDate()).equals(dateProvider.today())) {
             decrementStreak();
@@ -271,6 +280,10 @@ public class MainViewModel extends ViewModel {
 
         incrementHabitStreakUseCase.execute(habit.getId());
 
+    }
+
+    public void clearError() {
+        _error.setValue(null);
     }
 
 }

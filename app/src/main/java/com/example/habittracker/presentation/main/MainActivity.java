@@ -119,8 +119,15 @@ public class MainActivity extends AppCompatActivity {
             streakValue.setText(String.valueOf(value));
         });
 
-        viewModel.loadData();
+        viewModel.error.observe(this, errorMsg -> {
+            if (errorMsg != null) {
+                Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
 
+                viewModel.clearError();
+            }
+        });
+
+        viewModel.loadData();
 
         LinearLayout btnGenerateMock = findViewById(R.id.btnGenerateMock);
         LinearLayout btnCards = findViewById(R.id.buttonCards);
@@ -170,12 +177,17 @@ public class MainActivity extends AppCompatActivity {
 
 
                 if (habitName.isEmpty()) {
-                    Toast.makeText(this, "Digite o nome do hábito", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please, enter habit name", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (goalText.isEmpty()) {
-                    Toast.makeText(this, "Digite a meta diária", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please, enter daily goal", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (Integer.parseInt(goalText) > 5 || Integer.parseInt(goalText) < 1) {
+                    Toast.makeText(this, "Daily goal should be between 1 and 5", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

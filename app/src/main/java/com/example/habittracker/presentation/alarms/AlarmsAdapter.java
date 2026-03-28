@@ -79,7 +79,7 @@ public class AlarmsAdapter extends RecyclerView.Adapter<AlarmsAdapter.AlarmViewH
 
             String formatedTime;
 
-            formatedTime = String.valueOf(alarm.getHour()) + ":"+ String.valueOf(alarm.getMinute());
+            formatedTime = String.format("%02d:%02d",alarm.getHour(), alarm.getMinute());
 
             txtAlarmTime.setText(formatedTime);
 

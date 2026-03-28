@@ -29,9 +29,10 @@
         android:id="@+id/edtHabitName"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:hint="Ex: Drink alcohool"
+        android:hint="Ex: Drink Water"
         android:textColorHint="#ABABB3"
         android:padding="12dp"
+        android:maxLength="12"
         android:textColor="#FFFFFF"
         android:background="@drawable/habit_modal_input_background"/>
 

@@ -3,6 +3,7 @@ package com.example.habittracker.presentation.alarms;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.habittracker.app.ResultClass;
 import com.example.habittracker.app.alarms.useCases.CancelAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.CreateAlarmUseCase;
 import com.example.habittracker.app.alarms.useCases.DeleteAlarmUseCase;
@@ -57,6 +58,8 @@ public class AlarmsViewModel {
     MutableLiveData<List<AlarmsDisplayDataHolder>> _displayData = new MutableLiveData<>();
 
     LiveData<List<AlarmsDisplayDataHolder>> displayData = _displayData;
+    private MutableLiveData<String> _error = new MutableLiveData<>();
+    public LiveData<String> error = _error;
 
     public void loadData() {
 
@@ -92,10 +95,15 @@ public class AlarmsViewModel {
 
         Habit habit = getHabitByIdUseCase.execute(habitId);
 
-        Alarm alarm = createAlarmUseCase.execute(habitId, hour, minute);
+        ResultClass<Alarm> result = createAlarmUseCase.execute(habitId, hour, minute);
+
+        if (result.isFailure()) {
+            _error.setValue(result.getError());
+            return;
+        }
 
         if (habit.isActiveAlarms()) {
-            scheduleAlarmUseCase.execute(alarm);
+            scheduleAlarmUseCase.execute(result.getData());
         }
 
         loadData();
@@ -142,6 +150,10 @@ public class AlarmsViewModel {
 
         loadData();
 
+    }
+
+    public void clearError() {
+        _error.setValue(null);
     }
 
 }
